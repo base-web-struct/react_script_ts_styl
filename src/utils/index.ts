@@ -58,4 +58,21 @@ export default class Util {
     }
   }
 
+  public static findMenuByName (name: string, menuList: any): any {
+    const menuListArray: [] = menuList.slice()
+    const len: number = menuListArray.length
+    for (let i = 0; i < len; i ++) {
+      const menuItem: any = menuListArray[i]
+      if (menuItem.name === name) {
+        return {...menuItem}
+      }
+      if (menuItem.children) {
+       const targetMenuObj = this.findMenuByName (name, menuItem.children)
+       if (targetMenuObj) {
+        return targetMenuObj
+       }
+      }
+    }
+  }
+
 }

@@ -62,6 +62,10 @@
                   border-bottom: 1px solid rgba(4, 50, 100, .51);
                   cursor: pointer;
 
+                  &.selected,
+                  &:hover
+                    background-color: rgba(41, 157, 242, .6);
+
         
     .con-right
       width: calc(100% - 220px);
@@ -80,6 +84,11 @@
               background-color: rgba(41, 157, 242, .4);
               border: 1px solid rgba(41, 157, 242, .4);
               color: rgba(255, 255, 255, .8);
+
+            &.assign
+              background-color: rgba(125, 173, 240, .4);
+              border: 1px solid rgba(125, 173, 240, .4);
+              color: rgba(255, 255, 255, .8);
           .ant-btn
             width: 60px;
             height 24px;
@@ -97,10 +106,185 @@
             &.feed
               border: 1px solid rgb(255, 107, 39);
               color: rgb(255, 107, 39);
-            &.finsh
+            &.finish
               border: 1px solid rgb(103, 185, 245);
               color: rgb(103, 185, 245);
             &.assign
               border: 1px solid rgb(125, 173, 240);
               color: rgb(125, 173, 240);
+        
+
+.assign-main
+  .form-input
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+
+    &.area
+      display: block;
+
+      & > label 
+        line-height 30px;
+        display: inline-block;
+        width: 100%;
+
+      & > textarea 
+        width: 100%;
+        height 80px;
+        background-color: rgb(6, 36, 86);
+        border: 0;
+        resize: none;
+
+      & > .ant-input
+        padding: 4px 11px;
+
+    & > label 
+      width 40px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, .8);
+
+    & > .ant-input
+      width: calc(100% - 40px);
+      padding: 4px 11px 4px 22px;
+
+    & > i
+      color: rgba(255, 255, 255, .8);
+      transform: translate(18px, -2px);
+
+  .res-list
+    width: 100%;
+    max-height: 200px;
+    margin-top: 10px;
+    padding: 6px 40px;
+    overflow: auto;
+
+    & > li
+      width: 100%;
+      height 30px;
+      display: flex;
+      align-items: center;
+
+      .ant-checkbox-wrapper
+        .ant-checkbox
+          .ant-checkbox-inner
+            background-color: transparent;
+            border-color: #809EB3;
+
+        & > span 
+          &:nth-child(2)
+            color: rgba(255, 255, 255, .8);
+            font-size: 12px;
+            & > span
+              &:nth-child(1)
+                margin-right: 6px;
+
+  
+  .user-res-box
+    width: 100%;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    & > label
+      color: rgba(255, 255, 255, .8);
+      width: 40px;
+      line-height 32px;
+
+    .tag-box
+      width: calc(100% - 50px);
+      max-height: 200px;
+      overflow: auto;
+
+      .ant-tag
+        margin-top: 6px;
+
+
+.msg-detail-modal
+  color: rgba(255, 255, 255, .8);
+  .form-input
+    width: 100%;
+    display: flex;
+    line-height: 30px;
+    justify-content: space-between;
+
+    & > label
+      width: 50px;
+
+    & > .item-con
+      width: calc(100% - 60px);
+      padding: 5px 0;
+      line-height: 20px;
+      color: rgba(255, 255, 255, .6);
+
+    &.col4
+      justify-content: space-around;
+      & > label
+        width: 50px;
+
+      & > .item-con
+        width: calc(50% - 60px);
+
+    &.origin
+      display: block;
+      & > .item-con
+        width: 100%;
+        background-color: rgba(41, 157, 242, .06);
+        padding: 10px 60px;
+
+        .ant-col-12
+          display: flex;
+          justify-content: space-between;
+          & > span 
+            display: inline-block;
+            &:first-child
+              width: 50px;
+              text-align: justify;
+              text-align-last:justify
+
+            &:last-child
+              width: calc(100% - 60px);
+    
+    &.list
+      display: block;
+
+      .item-list
+        width: 100%;
+        max-height: 200px;
+        background-color: rgba(41, 157, 242, .06);
+        color: rgba(255, 255, 255, .6);
+        padding: 10px 0;
+        overflow: auto;
+
+        & > ul
+          width: 100%;
+
+          & > li
+            width: 100%;
+            padding: 0 10px;
+            display: flex;
+            justify-content: space-around;
+            line-height: 30px;
+            &:nth-child(2n+1)
+              background-color: rgba(41, 157, 242, .2);
+
+            & > i 
+              display: inline-block;
+              width: 6px;
+              height 6px;
+              background-color: #90C1ED;
+              border-radius:  50%;
+              margin: 12px 10px 12px 0;
+
+            & > .time
+              margin-right: 10px;
+
+            & > span 
+              &:last-child
+                width: calc(100% - 160px);
+                display: inline-block;
+                line-height: 20px;
+                padding: 5px 0;
+
         

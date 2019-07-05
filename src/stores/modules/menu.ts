@@ -16,6 +16,11 @@ export class MenuStore {
     return this.menu
   }
 
+  @action public reCache () {
+    this.menu = null
+    this.menuList = []
+  }
+
   public getUrl (): string {
     if (this.menu) {
       return this.menu.href

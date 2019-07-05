@@ -10,7 +10,9 @@ export default class Bean {
   public static MSG_STATUS = {
     0: '未处理',
     1: '处理中',
-    2: '已完成'
+    2: '已派发',
+    3: '已完成',
+    4: '已反馈'
   }
 
 }

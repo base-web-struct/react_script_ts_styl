@@ -1,9 +1,12 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { MsgService } from 'src/services/msg'
-import { Collapse, Button, Table } from 'antd'
+import { Collapse, Button, Table, Modal, message } from 'antd'
 import { observable } from 'mobx'
 import Bean from 'src/beans'
+import Assign from './modals/assign'
+import FeedBack from './modals/feedback'
+import Detail from './modals/detail'
 
 @inject('msgService')
 @observer
@@ -15,9 +18,16 @@ class Advance extends React.Component<{}, {}> {
 
   @observable public taskList: any[] = []
   @observable public msgList: any[] = []
+  @observable public expandList: string[] = []
+  @observable public assignRef: any
+  @observable public feedbackRef: any
+  @observable public detailRef: any
   @observable public pagination: any
   @observable public chooseTask: string
   @observable public scrollHeight: number
+  @observable public assignModal: boolean
+  @observable public feedbackModal: boolean
+  @observable public detailModal: boolean
 
   constructor (props: any) {
     super(props)
@@ -41,6 +51,87 @@ class Advance extends React.Component<{}, {}> {
     console.log(page)
   }
 
+  public receive = (data: any) => {
+    Modal.confirm({
+      title: '提示',
+      content: `是否接收${data.title}`,
+      cancelText: '取消',
+      okText: '确定',
+      onOk: async () => {
+        const res = await this.msgService.updateMsgStatus({
+          id: data.id,
+          status: 1
+        })
+        if (res.status === 0) {
+          message.success('接收成功')
+          this.searchList(this.chooseTask)
+        } else {
+          message.error(res.msg || '接受失败')
+        }
+      }
+    })
+  }
+
+  public assign = (data: any) => {
+    this.assignRef.initUsers(data.id)
+    this.assignModal = true
+  }
+
+  public closeAssign = () => {
+    this.assignModal = false
+  }
+
+  public onAssignRef = (ref: React.Component) => {
+    this.assignRef = ref
+  }
+
+  public onFeedbackRef = (ref: React.Component) => {
+    this.feedbackRef = ref
+  }
+
+  public onDetailRef = (ref: React.Component) => {
+    this.detailRef = ref
+  }
+
+  public feedback = (data: any) => {
+    this.feedbackRef.init(data)
+    this.feedbackModal = true
+  }
+
+  public goDetail = (data: any) => {
+    this.detailRef.initData(data.id)
+    this.detailModal = true
+  }
+
+  public closeFeedback = () => {
+    this.feedbackModal = false
+  }
+
+  public closeDetail = () => {
+    this.detailModal = false
+  }
+
+  public finish = (data: any) => {
+    Modal.confirm({
+      title: '提示',
+      content: `是否完成${data.title}`,
+      cancelText: '取消',
+      okText: '确定',
+      onOk: async () => {
+        const res = await this.msgService.updateMsgStatus({
+          id: data.id,
+          status: 3
+        })
+        if (res.status === 0) {
+          message.success('协作完成')
+          this.searchList(this.chooseTask)
+        } else {
+          message.error(res.msg || '协作完成异常')
+        }
+      }
+    })
+  }
+
   public searchList = async (id: string) => {
     const resp: any = await this.msgService.getMsgList({id: this.chooseTask})
     if (resp.status === 0) {
@@ -52,9 +143,11 @@ class Advance extends React.Component<{}, {}> {
     this.tableBox = React.createRef()
     this.tableConfig = [
       {
-        title: '任务',
-        dataIndex: 'title',
-        key: 'title'
+        title: '消息内容',
+        key: 'title',
+        render: (data: any) => (
+          <div onClick={this.goDetail.bind(this, data)}>{data.title}</div>
+        )
       },
       {
         width: 100,
@@ -75,18 +168,24 @@ class Advance extends React.Component<{}, {}> {
             default:
               return (
                 <div className="op-box">
-                  <Button className="receive">接受</Button>
-                  <Button className="assign">派发</Button>
+                  <Button onClick={this.receive.bind(this, data)} className="receive">接受</Button>
+                  <Button onClick={this.assign.bind(this, data)} className="assign">派发</Button>
                 </div>
               )
             case 1:
               return (
                 <div className="op-box">
-                  <Button className="feed">反馈</Button>
-                  <Button className="finish">完成</Button>
+                  <Button onClick={this.feedback.bind(this, data)} className="feed">反馈</Button>
+                  <Button onClick={this.finish.bind(this, data)} className="finish">完成</Button>
                 </div>
               )
             case 2:
+              return (
+                <div className="op-box">
+                  <Button disabled className="assign">已派发</Button>
+                </div>
+              )
+            case 3:
               return (
                 <div className="op-box">
                   <Button disabled className="finish">已完成</Button>
@@ -99,6 +198,9 @@ class Advance extends React.Component<{}, {}> {
     const res: any = await this.msgService.getTaskTree()
     if (res.status === 0) {
       this.taskList = res.data
+      this.taskList.forEach((item: any) => {
+        this.expandList = [...this.expandList, `${item.id}`]
+      })
       const task: any = await new Promise((resolve: any) => {
         this.taskList.filter((item: any): boolean | void => {
           if (item.children && item.children.length > 0) {
@@ -124,19 +226,35 @@ class Advance extends React.Component<{}, {}> {
   public render () {
     return (
       <div className="advance-main">
+        <Assign
+          onRef={this.onAssignRef}
+          visible={this.assignModal}
+          close={this.closeAssign}
+          refresh={this.searchList.bind(this, this.chooseTask)}/>
+        <FeedBack 
+          visible={this.feedbackModal}
+          close={this.closeFeedback}
+          onRef={this.onFeedbackRef}
+          refresh={this.searchList.bind(this, this.chooseTask)}/>
+        <Detail
+          visible={this.detailModal}
+          close={this.closeDetail}
+          onRef={this.onDetailRef}/>
         <div className="advance-con">
           <div className="con-left">
-            <Collapse>
+            <Collapse
+              activeKey={this.expandList}
+              onChange={(e: string[]) => this.expandList = e}>
               {
                 this.taskList.map((item: any) => {
                   return (
-                    <Collapse.Panel header={`${item.name}(${item.count})`}  key={item.id}>
+                    <Collapse.Panel header={`${item.name}(${item.count})`}  key={`${item.id}`}>
                       <ul>
                         {
                           (item.children && item.children.length > 0) ? (
                             item.children.map((n: any) => {
                               return (
-                                <li onClick={this.chooseMsg.bind(this, n)} key={n.id}>{`${n.name}(${n.count})`}</li>
+                                <li className={`${(this.chooseTask === n.id) ? ('selected') : ('')}`} onClick={this.chooseMsg.bind(this, n)} key={n.id}>{`${n.name}(${n.count})`}</li>
                               )
                             })
                           ) : ('')

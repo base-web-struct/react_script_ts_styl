@@ -38,6 +38,7 @@ export class UserStore {
 
   @action public sigout () {
     Cookies.remove('account_info')
+    Cookies.remove('menu_cache')
     this.account = undefined
     this.isLogin = false
     location.replace('/login')

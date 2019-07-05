@@ -1,15 +1,15 @@
 import * as React from 'react'
-import { Modal, Input, message } from 'antd';
+import { Modal, Input, message } from 'antd'
 import { observable } from 'mobx'
 import { observer, inject } from 'mobx-react'
 import { UserService } from 'src/services/user'
 import { GroupService } from 'src/services/group'
 import { CoopService } from 'src/services/coop'
 
-interface AddCoopProps {
+export interface AddCoopProps {
   visible: boolean
   close: () => void
-  onRef: (ref: any) => void
+  onRef: (ref: React.Component) => void
   refersh: () => void
 }
 
@@ -150,6 +150,7 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
         className="add-coop-modal"
         title="情报协作表单"
         centered
+        maskClosable={false}
         cancelText={'取消'}
         okText={'确定'}
         visible={visible}

@@ -9,8 +9,9 @@ import {
   message
 } from 'antd'
 import { RouteComponentProps } from 'react-router'
-import { UserService } from '../../services/user'
-import { UserStore } from '../../stores/modules/user'
+import { UserService } from 'src/services/user'
+import { UserStore } from 'src/stores/modules/user'
+import { MenuStore } from 'src/stores/modules/menu'
 
 export interface LoginProps extends RouteComponentProps<{}> {
   form: any,
@@ -18,17 +19,19 @@ export interface LoginProps extends RouteComponentProps<{}> {
   userStore: UserStore
 }
 
-@inject('userService', 'userStore')
+@inject('userService', 'userStore', 'menuStore')
 @observer
 class Login extends React.Component<LoginProps, {}> {
 
   public userService: UserService
   public userStore: UserStore
+  public menuStore: MenuStore
 
   constructor (props: any) {
     super(props)
     this.userService = props.userService
     this.userStore = props.userStore
+    this.menuStore = props.menuStore
   }
 
   public login = async (e: any): Promise<any> => {
@@ -40,10 +43,10 @@ class Login extends React.Component<LoginProps, {}> {
           remember: undefined
         }
         const res = await this.userService.sign(putData)
-        console.log(res)
         if (res.status === 0) {
           message.success('登录成功')
           this.userStore.saveLoginData(res.data)
+          this.menuStore.reCache()
           this.props.history.replace('/main/home')
         } else {
           message.error(res.msg || '登录失败')

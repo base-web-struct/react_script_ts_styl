@@ -15,8 +15,9 @@ import { UserService } from 'src/services/user'
 import { HomeStore } from 'src/stores/modules/home'
 import { MenuService } from 'src/services/menu'
 import { MenuStore } from 'src/stores/modules/menu'
+import { UserStore } from 'src/stores/modules/user'
 
-@inject('userService', 'menuService', 'homeStore', 'menuStore')
+@inject('userService', 'menuService', 'homeStore', 'menuStore', 'userStore')
 @observer
 class Main extends React.Component<RouteComponentProps<{}>, {}> {
 
@@ -24,10 +25,11 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
   public homeStore: HomeStore
   public menuService: MenuService
   public menuStore: MenuStore
+  public userStore: UserStore
 
   @observable public collapsed: boolean = false
   @observable public menuList: any[]
-  @observable public selectItem: string
+  @observable public selectItem: string[]
   @observable public selectExpand: string[] = []
 
   constructor (props: any) {
@@ -41,12 +43,13 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     this.homeStore = props.homeStore
     this.menuService = props.menuService
     this.menuStore = props.menuStore
+    this.userStore = props.userStore
   }
 
   public getMenuList = async () => {
     const item: any = this.menuStore.getMenu()
     if (item) {
-      this.selectItem = item.id
+      this.selectItem = [item.id]
       this.selectExpand = item.parent_id
     }
     const list: any = await this.menuStore.getMenuList()
@@ -59,19 +62,31 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
       Util.setMenu(res.data)
       this.menuList = res.data
       this.menuStore.setMenuList(this.menuList)
+      if (!item) {
+        const select: any = this.menuList.slice()[0]
+        this.selectItem = [select.id]
+        this.selectExpand = select.parent_id
+        const href: string = await this.menuCache(select)
+
+        if (!location.search && href) {
+          this.props.history.push(href)
+        }
+      }
+      console.log(this.selectItem)
     } else {
       message.error(res.msg || '获取菜单失败')
     }
+    
   }
 
-  public chooseMenu = async (item: any) => {
+  public menuCache = async (item: any): Promise<string> => {
     const res: any = await this.menuService.getHref({menu_name: item.name})
     let href: string = ''
     if (res.status === 0) {
       href = res.data
     } else {
       message.error(res.msg || '获取链接失败')
-      return
+      return ''
     }
     this.menuStore.setMenu({
       ...item,
@@ -79,17 +94,52 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     })
     switch (item.type) {
       case 'dynamic':
-        this.props.history.push(`/main/home?id=${item.id}&&href=${encodeURIComponent(item.href)}`)
+        return `/main/home?id=${item.id}&&href=${encodeURIComponent(item.href)}`
         break
       case 'static':
       default:
-        this.props.history.push(`${href}?id=${item.id}`)
+        return `${href}?id=${item.id}`
         break
+    }
+  }
+
+  public chooseMenu = async (item: any) => {
+    const href: string = await this.menuCache(item)
+    if (href) {
+      this.props.history.push(href)
+    }
+    this.selectItem = [item.id]
+    this.collapsed = false
+  }
+
+  public expandItem = async (data: any) => {
+    const index = this.selectExpand.indexOf(data.id)
+    if (index > -1) {
+      this.selectExpand.splice(index, 1)
+    } else {
+      this.selectExpand.push(data.id)
     }
   }
 
   public toggleMenu = () => {
     this.collapsed = !this.collapsed
+  }
+  
+  public hideMenu = () => {
+    this.collapsed = false
+  }
+
+  public showMenu = () => {
+    this.collapsed = true
+  }
+
+  public sigout = async (): Promise<any> => {
+    const res = await this.userService.sigout()
+    if (res.status === 0) {
+      this.userStore.sigout()
+    } else {
+      message.error(res.msg || '操作失败')
+    }
   }
 
   public MenuItem = (list: any[]): React.ReactNode => {
@@ -101,7 +151,8 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
               key={item.id}
               title={
                 <span>{item.name}</span>
-              }>
+              }
+              onTitleClick={this.expandItem.bind(this, item)}>
                 {this.MenuItem(item.children)}
                 
             </Menu.SubMenu>
@@ -120,18 +171,28 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     return
   }
 
+  public componentWillReceiveProps (nextPrpos: any) {
+    if (nextPrpos.location.pathname !== this.props.location.pathname) {
+      const search = nextPrpos.location.search
+      const map: any = Util.getHrefMap(search)
+      this.selectItem = [map.id]
+    }
+   
+  }
+
   public render () {
     const location = this.props.location
     const { pathname } = location
 
     return (
       <div className="main">
-        <HeaderNav toggle={this.toggleMenu} />
+        <HeaderNav toggle={this.toggleMenu} sigout={this.sigout}/>
         <div className="main-body">
-          <div className={`left-menu ${this.collapsed ? '' : 'unexpand' }`}>
+          <div className="menu-slide" onMouseEnter={this.showMenu}></div>
+          <div onMouseLeave={this.hideMenu} className={`left-menu ${this.collapsed ? '' : 'unexpand' }`}>
             <Menu
-              defaultSelectedKeys={[this.selectItem]}
-              defaultOpenKeys={this.selectExpand}
+              selectedKeys={this.selectItem}
+              openKeys={this.selectExpand}
               mode="inline"
               theme="dark">
                 {

@@ -4,13 +4,14 @@ import moment from 'moment'
 
 export interface HeaderProps {
   toggle: () => void
+  sigout: () => Promise<any>
 }
 
 @observer
 export default class HeaderNav extends React.Component<HeaderProps, {}> {
 
   public timeStamp: React.RefObject<any>
-
+  public timer: any
   constructor (props: any) {
     super(props)
     this.timeStamp = React.createRef()
@@ -20,12 +21,20 @@ export default class HeaderNav extends React.Component<HeaderProps, {}> {
     this.props.toggle()
   }
 
+  public sigout = () => {
+     this.props.sigout()
+  }
+
   public componentDidMount () {
     const update = () => {
       this.timeStamp.current.innerHTML = moment().format('YYYY-MM-DD HH:mm:ss')
     }
     update()
-    setInterval(update, 1000)
+    this.timer = setInterval(update, 1000)
+  }
+
+  public componentWillUnmount () {
+    clearInterval(this.timer)
   }
 
   public render () {
@@ -44,6 +53,7 @@ export default class HeaderNav extends React.Component<HeaderProps, {}> {
           <span className="place">武昌分局-梅苑派出所</span>
           <span className="time" ref={this.timeStamp}>
           </span>
+          <span className="logout" onClick={this.sigout}>退出</span>
         </div>
       </div>
     )

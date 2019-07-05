@@ -10,7 +10,7 @@ import { inject, observer } from 'mobx-react'
 import { CoopService } from 'src/services/coop'
 import Util from 'src/utils'
 import Bean from 'src/beans'
-import AddCoop from './modals/add_coop';
+import AddCoop from './modals/add_coop'
 
 @inject('coopService')
 @observer
@@ -196,7 +196,7 @@ class Cooperate extends React.Component<{}, {}> {
     this.searchData()
   }
 
-  public onRef = (ref: any) => {
+  public onRef = (ref: React.Component) => {
     this.addCoopRef = ref
   }
 
