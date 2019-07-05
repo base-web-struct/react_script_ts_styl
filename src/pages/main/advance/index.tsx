@@ -15,7 +15,10 @@ class Advance extends React.Component<{}, {}> {
   public msgService: MsgService
   public tableConfig: any[]
   public tableBox: React.RefObject<any>
+  public count: number
 
+  @observable public page: number = 1
+  @observable public total: number
   @observable public taskList: any[] = []
   @observable public msgList: any[] = []
   @observable public expandList: string[] = []
@@ -34,12 +37,10 @@ class Advance extends React.Component<{}, {}> {
     this.msgService = props.msgService
     this.init()
     this.pagination = {
-      current: 1,
       pageSize: 10,
-      total: 10,
       size: 'middle',
-      hideOnSinglePage: true,
-      onChange: this.changePage
+      onChange: this.changePage,
+      hideOnSinglePage: true
     }
   }
 
@@ -48,7 +49,8 @@ class Advance extends React.Component<{}, {}> {
   }
 
   public changePage = (page: number) => {
-    console.log(page)
+    this.page = page
+    this.searchList(this.chooseTask)
   }
 
   public receive = (data: any) => {
@@ -133,9 +135,14 @@ class Advance extends React.Component<{}, {}> {
   }
 
   public searchList = async (id: string) => {
-    const resp: any = await this.msgService.getMsgList({id: this.chooseTask})
+    const resp: any = await this.msgService.getMsgList({
+      id,
+      page_no: this.page,
+      page_size: this.pagination.pageSize
+    })
     if (resp.status === 0) {
       this.msgList = resp.data.list
+      this.total = resp.data.count
     }
   }
 
@@ -276,7 +283,11 @@ class Advance extends React.Component<{}, {}> {
                 x: false,
                 y: this.scrollHeight
               }}
-              pagination={this.pagination}
+              pagination={{
+                ...this.pagination,
+                current: this.page,
+                total: this.total
+              }}
               columns={this.tableConfig}
               dataSource={this.msgList} />
           </div>

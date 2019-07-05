@@ -55,17 +55,17 @@ export default class Home extends React.Component<HomePorps, {}> {
       let targetMenuObj: any
       if (event.data.type === 'toDigitalInfoCoop') {
         targetMenuObj =  Util.findMenuByName('情报协作', menuList)
-        this.props.history.push(`/main/cooperate?id=${targetMenuObj.id}`)
+        this.props.history.push(`/main/cooperate?id=${targetMenuObj.id}&parent_id=${targetMenuObj.parent_id}`)
       }
 
       if (event.data.type === 'toDigitalTask') {
         targetMenuObj =  Util.findMenuByName('任务预警中心', menuList)
-        this.props.history.push(`/main/advance?id=${targetMenuObj.id}`)
+        this.props.history.push(`/main/advance?id=${targetMenuObj.id}&parent_id=${targetMenuObj.parent_id}`)
       }
 
       if (event.data.type === 'toPersonManage') {
         targetMenuObj =  Util.findMenuByName('人口管理', menuList)
-        this.props.history.push(`/main/advance?id=${targetMenuObj.id}&href=${targetMenuObj.href}&parent_id=${targetMenuObj.parent_id}`)
+        this.props.history.push(`/main/advance?id=${targetMenuObj.id}&parent_id=${targetMenuObj.parent_id}&href=${encodeURIComponent(targetMenuObj.href)}`)
       }
       this.menuStore.setMenu(targetMenuObj)
 
@@ -79,7 +79,7 @@ export default class Home extends React.Component<HomePorps, {}> {
           (this.url) ? (
             <iframe
               className="home-frame"
-              src={(this.url.indexOf('http://') > -1) ? (this.url) : (`http://localhost:9300`)} >
+              src={(this.url.indexOf('http://') > -1) ? (this.url) : (`http://${this.url}`)} >
             </iframe>
           ) : ('')
         }

@@ -31,11 +31,13 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
   @observable public menuList: any[]
   @observable public selectItem: string[]
   @observable public selectExpand: string[] = []
+  @observable public userProfile: any
 
   constructor (props: any) {
     super(props)
     this.initConfig(props)
     this.getMenuList()
+    this.getUserProfile()
   }
 
   public initConfig (props: any): void {
@@ -44,6 +46,13 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     this.menuService = props.menuService
     this.menuStore = props.menuStore
     this.userStore = props.userStore
+  }
+
+  public async getUserProfile () {
+    const res: any = await this.userService.getProfile()
+    if (res.status === 0) {
+      this.userProfile = res.data
+    }
   }
 
   public getMenuList = async () => {
@@ -59,7 +68,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     }
     const res = await this.menuService.getMenuList()
     if (res.status === 0) {
-      Util.setMenu(res.data)
+      // Util.setMenu(res.data)
       this.menuList = res.data
       this.menuStore.setMenuList(this.menuList)
       if (!item) {
@@ -183,13 +192,20 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
    
   }
 
+  public getDepartment (userProfile: any): string {
+    if (userProfile && userProfile.department) {
+      return userProfile.department
+    }
+    return ''
+  }
+
   public render () {
     const location = this.props.location
     const { pathname } = location
 
     return (
       <div className="main">
-        <HeaderNav toggle={this.toggleMenu} sigout={this.sigout}/>
+        <HeaderNav department={this.getDepartment(this.userProfile)} toggle={this.toggleMenu} sigout={this.sigout}/>
         <div className="main-body">
           <div className="menu-slide" onMouseEnter={this.showMenu}></div>
           <div onMouseLeave={this.hideMenu} className={`left-menu ${this.collapsed ? '' : 'unexpand' }`}>

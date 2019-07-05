@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import moment from 'moment'
 
 export interface HeaderProps {
+  department: string
   toggle: () => void
   sigout: () => Promise<any>
 }
@@ -50,7 +51,7 @@ export default class HeaderNav extends React.Component<HeaderProps, {}> {
           <div className="title"></div>
         </div>
         <div className="right-box">
-          <span className="place">武昌分局-梅苑派出所</span>
+          <span className="place">{this.props.department}</span>
           <span className="time" ref={this.timeStamp}>
           </span>
           <span className="logout" onClick={this.sigout}>退出</span>
