@@ -111,7 +111,7 @@ class Detail extends React.Component<DetailProps, {}> {
                 {
                   this.schema.map((item: any, index: number) => (
                     <Col key={index} span={12}>
-                      <span>{item.alias}</span>
+                      <span>{item.alias || item.name}</span>
                       <span>{this.baseData[item.name]}</span>
                     </Col>
                   ))

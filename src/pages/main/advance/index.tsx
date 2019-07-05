@@ -60,7 +60,7 @@ class Advance extends React.Component<{}, {}> {
       onOk: async () => {
         const res = await this.msgService.updateMsgStatus({
           id: data.id,
-          status: 1
+          status: 10
         })
         if (res.status === 0) {
           message.success('接收成功')
@@ -120,7 +120,7 @@ class Advance extends React.Component<{}, {}> {
       onOk: async () => {
         const res = await this.msgService.updateMsgStatus({
           id: data.id,
-          status: 3
+          status: 20
         })
         if (res.status === 0) {
           message.success('协作完成')
@@ -172,20 +172,21 @@ class Advance extends React.Component<{}, {}> {
                   <Button onClick={this.assign.bind(this, data)} className="assign">派发</Button>
                 </div>
               )
-            case 1:
+            case 10:
+            case 11:
               return (
                 <div className="op-box">
                   <Button onClick={this.feedback.bind(this, data)} className="feed">反馈</Button>
                   <Button onClick={this.finish.bind(this, data)} className="finish">完成</Button>
                 </div>
               )
-            case 2:
+            case 30:
               return (
                 <div className="op-box">
                   <Button disabled className="assign">已派发</Button>
                 </div>
               )
-            case 3:
+            case 20:
               return (
                 <div className="op-box">
                   <Button disabled className="finish">已完成</Button>
