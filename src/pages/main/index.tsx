@@ -5,6 +5,7 @@ import { Route, Switch, Redirect, RouteComponentProps } from 'react-router'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { observable } from 'mobx'
 import Util from 'src/utils'
+import Cookies from 'js-cookie'
 
 import Home from './home'
 import Cooperate from './cooperate'
@@ -16,6 +17,7 @@ import { HomeStore } from 'src/stores/modules/home'
 import { MenuService } from 'src/services/menu'
 import { MenuStore } from 'src/stores/modules/menu'
 import { UserStore } from 'src/stores/modules/user'
+import Cookie from 'js-cookie';
 
 @inject('userService', 'menuService', 'homeStore', 'menuStore', 'userStore')
 @observer
@@ -28,7 +30,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
   public userStore: UserStore
 
   @observable public collapsed: boolean = false
-  @observable public menuList: any[]
+  @observable public menuList: any[] = []
   @observable public selectItem: string[]
   @observable public selectExpand: string[] = []
   @observable public userProfile: any
@@ -59,7 +61,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     const item: any = this.menuStore.getMenu()
     if (item) {
       this.selectItem = [item.id]
-      this.selectExpand = item.parent_id
+      this.selectExpand = [item.parent_id]
     }
     const list: any = await this.menuStore.getMenuList()
     if (list && list.length > 0) {
@@ -74,7 +76,8 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
       if (!item) {
         const select: any = this.menuList.slice()[0]
         this.selectItem = [select.id]
-        this.selectExpand = select.parent_id
+        this.selectExpand = [select.parent_id]
+        Cookies.set('first_menu_cache', JSON.stringify(select))
         const href: string = await this.menuCache(select)
 
         if (!location.search && href) {
@@ -142,6 +145,14 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     this.collapsed = true
   }
 
+  public goHome = async () => {
+    const firstMenu = Cookie.getJSON('first_menu_cache')
+    const href: string = await this.menuCache(firstMenu)
+    if (href) {
+      this.props.history.push(href)
+    }
+  }
+
   public sigout = async (): Promise<any> => {
     const res = await this.userService.sigout()
     if (res.status === 0) {
@@ -159,7 +170,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
             <Menu.SubMenu
               key={item.id}
               title={
-                <span>{item.name}</span>
+                <span className="menu-name">{item.name}</span>
               }
               onTitleClick={this.expandItem.bind(this, item)}>
                 {this.MenuItem(item.children)}
@@ -170,8 +181,10 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
           return (
             <Menu.Item
               onClick={this.chooseMenu.bind(this, item)}
-              key={item.id}>
-              <span>{item.name}</span>
+              key={item.id}
+              title={item.name}
+              >
+              <span className="menu-name">{item.name}</span>
             </Menu.Item>
           )
         }
@@ -181,7 +194,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
   }
 
   public componentWillReceiveProps (nextPrpos: any) {
-    if (nextPrpos.location.pathname !== this.props.location.pathname) {
+    if (nextPrpos.location.search !== this.props.location.search) {
       const search = nextPrpos.location.search
       const map: any = Util.getHrefMap(search)
       this.selectItem = [map.id]
@@ -202,10 +215,14 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
   public render () {
     const location = this.props.location
     const { pathname } = location
-
+    let isHideGoHome = false
+    if (this.menuList.length) {
+      isHideGoHome = this.menuList.length === 1 || this.menuList[0].type === 'static'
+    }
+    
     return (
       <div className="main">
-        <HeaderNav department={this.getDepartment(this.userProfile)} toggle={this.toggleMenu} sigout={this.sigout}/>
+        <HeaderNav userProfile={this.userProfile} goHome={this.goHome} toggle={this.toggleMenu} sigout={this.sigout} isHideGoHome={isHideGoHome}/>
         <div className="main-body">
           <div className="menu-slide" onMouseEnter={this.showMenu}></div>
           <div onMouseLeave={this.hideMenu} className={`left-menu ${this.collapsed ? '' : 'unexpand' }`}>

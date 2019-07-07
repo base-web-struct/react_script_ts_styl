@@ -28,6 +28,7 @@ class Cooperate extends React.Component<{}, {}> {
   @observable public scrollHeight: number
   @observable public pagination: any
   @observable public addCoopModal: boolean
+  @observable public isDetail: boolean = false
 
   constructor (props: any) {
     super(props)
@@ -98,7 +99,10 @@ class Cooperate extends React.Component<{}, {}> {
     await this.addCoopRef.feed(data.id)
     this.addCoopModal = true
   }
-
+  public showDetail = (data: any) => {
+    this.isDetail = true
+    this.feed(data)
+  }
   public finish = (data: any) => {
     Modal.confirm({
       title: '提示',
@@ -155,7 +159,7 @@ class Cooperate extends React.Component<{}, {}> {
         )
       },
       {
-        width: 120,
+        width: 160,
         title: '操作',
         key: 'op',
         render: (data: any, index: number) => {
@@ -183,6 +187,7 @@ class Cooperate extends React.Component<{}, {}> {
                   <Button disabled className="finish" type="primary">已完成</Button>
                 ) : ('')
               }
+               <Button className="receive" onClick={this.showDetail.bind(this, data)}>详情</Button>
             </div>
           )
         }
@@ -199,6 +204,7 @@ class Cooperate extends React.Component<{}, {}> {
     return (
       <div className="cooperate-main">
         <AddCoop
+          isDetail={this.isDetail}
           onRef={this.onRef}
           visible={this.addCoopModal}
           refersh={this.searchData}

@@ -21,6 +21,7 @@ export default class Home extends React.Component<HomePorps, {}> {
   public userStore: UserStore
 
   @observable public url: string
+  @observable public isFullScreen: boolean = false
 
   constructor (props: any) {
     super(props)
@@ -35,8 +36,9 @@ export default class Home extends React.Component<HomePorps, {}> {
     }
        
   }
-  public componentDidMount () {
+  public async componentDidMount () {
     window.addEventListener('message', async (event: any) => {
+      const menuList: any = await this.menuStore.getMenuList()
       let BDPOrigin = Bean.BDP_ORIGIN
       if (this.url) {
         const originArray = this.url.split(':')
@@ -51,25 +53,38 @@ export default class Home extends React.Component<HomePorps, {}> {
         event.source.postMessage({'access_token': account.access_token}, event.origin)
         return
       }
-      const menuList: any = await this.menuStore.getMenuList()
       let targetMenuObj: any
-      if (event.data.type === 'toDigitalInfoCoop') {
+      
+      if (event.data.type === 'fullScreenMap') {
+        this.isFullScreen = true
+        return
+      } else if (event.data.type === 'toDigitalInfoCoop' || event.data.type === '情报协作') {
         targetMenuObj =  Util.findMenuByName('情报协作', menuList)
         this.props.history.push(`/main/cooperate?id=${targetMenuObj.id}&parent_id=${targetMenuObj.parent_id}`)
-      }
-
-      if (event.data.type === 'toDigitalTask') {
+      } else if (event.data.type === 'toDigitalTask' || event.data.type === '任务预警中心') {
         targetMenuObj =  Util.findMenuByName('任务预警中心', menuList)
         this.props.history.push(`/main/advance?id=${targetMenuObj.id}&parent_id=${targetMenuObj.parent_id}`)
-      }
-
-      if (event.data.type === 'toPersonManage') {
-        targetMenuObj =  Util.findMenuByName('人口管理', menuList)
-        this.props.history.push(`/main/advance?id=${targetMenuObj.id}&parent_id=${targetMenuObj.parent_id}&href=${encodeURIComponent(targetMenuObj.href)}`)
+      } else {
+        targetMenuObj =  Util.findMenuByName(event.data.type, menuList)
+        this.props.history.push(`/main/home?id=${targetMenuObj.id}&parent_id=${targetMenuObj.parent_id}&href=${encodeURIComponent(targetMenuObj.href)}`)
       }
       this.menuStore.setMenu(targetMenuObj)
 
     }, false);
+  }
+
+  public backPlatform = () => {
+    this.isFullScreen = false
+  }
+
+  public computedIframeSrc () {
+    if (this.isFullScreen) {
+      return Bean.FH_MAP_URL
+    } else {
+      return (this.url.indexOf('http://') > -1) ? (this.url) : (`http://${this.url}`)
+      // return 'http://localhost:9300'
+    }
+    
   }
 
   public render () {
@@ -78,11 +93,15 @@ export default class Home extends React.Component<HomePorps, {}> {
         {
           (this.url) ? (
             <iframe
-              className="home-frame"
-              src={(this.url.indexOf('http://') > -1) ? (this.url) : (`http://${this.url}`)} >
+              className={this.isFullScreen ? 'home-frame full-screen' : 'home-frame'}
+              src={this.computedIframeSrc()} >
             </iframe>
           ) : ('')
         }
+        {
+          this.isFullScreen ? <div className="full-screen-btn" onClick={this.backPlatform}>返回工作台</div> : ''
+        }
+        
       </div>
     )
   }

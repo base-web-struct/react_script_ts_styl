@@ -166,7 +166,7 @@ class Advance extends React.Component<{}, {}> {
         )
       },
       {
-        width: 200,
+        width: 250,
         title: '操作',
         key: 'op',
         render: (data: any) => {
@@ -177,6 +177,7 @@ class Advance extends React.Component<{}, {}> {
                 <div className="op-box">
                   <Button onClick={this.receive.bind(this, data)} className="receive">接受</Button>
                   <Button onClick={this.assign.bind(this, data)} className="assign">派发</Button>
+                  <Button onClick={this.goDetail.bind(this, data)} className="receive">详情</Button>
                 </div>
               )
             case 10:
@@ -185,18 +186,20 @@ class Advance extends React.Component<{}, {}> {
                 <div className="op-box">
                   <Button onClick={this.feedback.bind(this, data)} className="feed">反馈</Button>
                   <Button onClick={this.finish.bind(this, data)} className="finish">完成</Button>
+                  <Button onClick={this.goDetail.bind(this, data)} className="receive">详情</Button>
                 </div>
               )
             case 30:
               return (
                 <div className="op-box">
                   <Button disabled className="assign">已派发</Button>
+                  <Button onClick={this.goDetail.bind(this, data)} className="receive">详情</Button>
                 </div>
               )
             case 20:
               return (
                 <div className="op-box">
-                  <Button disabled className="finish">已完成</Button>
+                  <Button onClick={this.goDetail.bind(this, data)} className="receive">详情</Button>
                 </div>
               )
           }

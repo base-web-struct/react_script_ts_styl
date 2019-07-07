@@ -87,6 +87,7 @@ class FeedBack extends React.Component<AddCoopProps, {}> {
     if (res.status === 0) {
       message.success('反馈成功')
       this.props.refresh()
+      this.feedText = ''
       this.props.close()
     } else {
       message.error(res.msg || '反馈失败')

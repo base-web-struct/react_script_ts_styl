@@ -22,8 +22,10 @@ export default class Bean {
       value: '分局协作作战中心'
     },
     {
-      name: '市局大数据中心',
-      value: '市局大数据中心'
+      name: '武汉市公安局',
+      value: '武汉市公安局'
     }
   ] 
+
+  public static FH_MAP_URL = 'http://60.32.1.3/hero/community/index.html?policeNo=032604'
 }

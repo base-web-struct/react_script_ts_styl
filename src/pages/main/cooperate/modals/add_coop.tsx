@@ -6,12 +6,14 @@ import { UserService } from 'src/services/user'
 import { GroupService } from 'src/services/group'
 import { CoopService } from 'src/services/coop'
 import Bean from 'src/beans'
+import Util from 'src/utils';
 
 export interface AddCoopProps {
   visible: boolean
   close: () => void
   onRef: (ref: React.Component) => void
   refersh: () => void
+  isDetail: boolean
 }
 
 interface CoopDataProp {
@@ -22,7 +24,8 @@ interface CoopDataProp {
   sponsor_dep_code: string,
   remarks: string,
   coop_dep: string,
-  id: string
+  id: string,
+  feedback_list: any[]
 }
 
 @inject('userService', 'groupService', 'coopService')
@@ -59,7 +62,8 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
       sponsor_dep: '',
       sponsor_dep_code: '',
       remarks: '',
-      coop_dep: ''
+      coop_dep: '',
+      feedback_list: []
     }
   }
 
@@ -73,7 +77,8 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
         name: res.data.name,
         remarks: res.data.remarks,
         coop_dep: res.data.coop_dep,
-        id
+        id,
+        feedback_list: res.data.feedback_list
       }
     }
   }
@@ -143,20 +148,40 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
     this.props.close()
   }
 
+  public FeedBackList = (coopData: CoopDataProp): React.ReactNode => {
+   
+    if (this.props.isDetail) {
+      return coopData.feedback_list.length ? coopData.feedback_list.map((item: any, index: number) => (
+        <li key={index}>
+          <i></i>
+          <span className="time">{Util.momentDate(item.create_time)}</span>
+          <span>{item.content}</span>
+        </li>
+      )) : <li className="no-info">无</li>
+    } else {
+      return ''
+    }
+  }
+
   public render () {
     const { visible } = this.props
-
+    let modalPrps: any = {
+      className: 'add-coop-modal',
+      title: '情报协作表单',
+      centered: true,
+      maskClosable: false,
+      cancelText: '取消',
+      okText: '确定',
+      visible,
+      onOk: this.ok,
+      onCancel: this.cancel
+    }
+    if (this.props.isDetail) {
+      modalPrps = {...modalPrps, footer: null}
+    }
     return (
-      <Modal
-        className="add-coop-modal"
-        title="情报协作表单"
-        centered
-        maskClosable={false}
-        cancelText={'取消'}
-        okText={'确定'}
-        visible={visible}
-        onOk={this.ok}
-        onCancel={this.cancel}
+      <Modal 
+      {...modalPrps}
       >
         <div className="form-input">
           <label>事项名称</label>
@@ -208,7 +233,7 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
           </div>
         </div>
         {
-          (this.coopData.id) ? (
+          this.coopData.id && !this.props.isDetail ? 
             <div className="form-input area">
               <label>反馈</label>
               <Input.TextArea
@@ -216,7 +241,13 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
                 value={this.feedText}
                 onChange={e => { this.feedText = e.target.value }} />
             </div>
-          ) : ('')
+           : <div className="feedback-list">
+              <div className="label">反馈列表</div>
+              <ul>
+                {this.FeedBackList(this.coopData)}
+              </ul>
+              
+            </div>
         }
       </Modal>
     )

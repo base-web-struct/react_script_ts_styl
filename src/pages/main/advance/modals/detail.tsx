@@ -64,7 +64,7 @@ class Detail extends React.Component<DetailProps, {}> {
     return (
       <Modal
         className="msg-detail-modal"
-        title="反馈"
+        title="详情"
         width={600}
         footer={null}
         centered
@@ -124,13 +124,13 @@ class Detail extends React.Component<DetailProps, {}> {
             <div className="item-list">
               <ul>
                 {
-                  this.detailData.feedback_list.map((item: any, index: number) => (
+                  this.detailData.feedback_list.length ? this.detailData.feedback_list.map((item: any, index: number) => (
                     <li key={index}>
                       <i></i>
                       <span className="time">{Util.momentDate(item.create_time)}</span>
                       <span>{item.content}</span>
                     </li>
-                  ))
+                  )) : <li className="no-info">无</li>
                 }
               </ul>
             </div>
