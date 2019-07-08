@@ -28,6 +28,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
   public menuService: MenuService
   public menuStore: MenuStore
   public userStore: UserStore
+  public fullScreenBtn: React.RefObject<any>
 
   @observable public collapsed: boolean = false
   @observable public menuList: any[] = []
@@ -40,6 +41,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     this.initConfig(props)
     this.getMenuList()
     this.getUserProfile()
+    this.fullScreenBtn = React.createRef()
   }
 
   public initConfig (props: any): void {
@@ -193,6 +195,13 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     return
   }
 
+  public requestFullscreen = () => {
+    const el: any = document.documentElement
+    const rfs = el.requestFullScreen || el.webkitRequestFullScreen ||
+        el.mozRequestFullScreen || el.msRequestFullScreen
+    rfs.call(el)
+  }
+
   public componentWillReceiveProps (nextPrpos: any) {
     if (nextPrpos.location.search !== this.props.location.search) {
       const search = nextPrpos.location.search
@@ -205,9 +214,13 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
    
   }
 
-  public getDepartment (userProfile: any): string {
-    if (userProfile && userProfile.department) {
-      return userProfile.department
+  public componentDidMount () {
+    // his.fullScreenBtn.current.click()
+  }
+
+  get getDepartment (): string {
+    if (this.userProfile && this.userProfile.department) {
+      return this.userProfile.department
     }
     return ''
   }
@@ -223,6 +236,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     return (
       <div className="main">
         <HeaderNav userProfile={this.userProfile} goHome={this.goHome} toggle={this.toggleMenu} sigout={this.sigout} isHideGoHome={isHideGoHome}/>
+        {/* <button className="full-screen-btn" ref={this.fullScreenBtn} onClick={this.requestFullscreen}>全屏</button> */}
         <div className="main-body">
           <div className="menu-slide" onMouseEnter={this.showMenu}></div>
           <div onMouseLeave={this.hideMenu} className={`left-menu ${this.collapsed ? '' : 'unexpand' }`}>

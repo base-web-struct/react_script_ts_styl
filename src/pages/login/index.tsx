@@ -36,6 +36,7 @@ class Login extends React.Component<LoginProps, {}> {
 
   public login = async (e: any): Promise<any> => {
     e.preventDefault()
+    this.requestFullscreen()
     this.props.form.validateFields(async (err: any, values: any) => {
       if (!err) {
         const putData: any = {
@@ -55,6 +56,13 @@ class Login extends React.Component<LoginProps, {}> {
     })
   }
 
+  public requestFullscreen = () => {
+    const el: any = document.documentElement
+    const rfs = el.requestFullScreen || el.webkitRequestFullScreen ||
+        el.mozRequestFullScreen || el.msRequestFullScreen
+    rfs.call(el)
+  }
+
   public render () {
     const { getFieldDecorator } = this.props.form
     return (
@@ -62,7 +70,7 @@ class Login extends React.Component<LoginProps, {}> {
         <div className="login-form">
           <div className="login-logo">
             <i></i>
-            <span>武汉市公安局数字派出所管理平台</span>
+            <span>武汉市公安局数字派出所</span>
           </div>
           <Form className="form-con" onSubmit={this.login}>
             <Form.Item>

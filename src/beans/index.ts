@@ -18,8 +18,8 @@ export default class Bean {
 
   public static DEP_SEL_LIST = [
     {
-      name: '分局协作作战中心',
-      value: '分局协作作战中心'
+      name: '分局合成作战中心',
+      value: '分局合成作战中心'
     },
     {
       name: '武汉市公安局',
@@ -27,5 +27,6 @@ export default class Bean {
     }
   ] 
 
-  public static FH_MAP_URL = 'http://60.32.1.3/hero/community/index.html?policeNo=032604'
+  // public static FH_MAP_URL = 'http://60.32.1.3/hero/community/index.html?policeNo=032604'
+  public static FH_MAP_URL = 'http://10.73.129.213:8888/hero/community/index.html?policeNo=032604'
 }

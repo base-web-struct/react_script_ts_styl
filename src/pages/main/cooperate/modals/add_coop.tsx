@@ -5,7 +5,7 @@ import { observer, inject } from 'mobx-react'
 import { UserService } from 'src/services/user'
 import { GroupService } from 'src/services/group'
 import { CoopService } from 'src/services/coop'
-import Bean from 'src/beans'
+import { RoleService } from 'src/services/role'
 import Util from 'src/utils';
 
 export interface AddCoopProps {
@@ -28,23 +28,27 @@ interface CoopDataProp {
   feedback_list: any[]
 }
 
-@inject('userService', 'groupService', 'coopService')
+@inject('userService', 'groupService', 'coopService', 'roleService')
 @observer
 class AddCoop extends React.Component<AddCoopProps, {}> {
 
   @observable public coopData: CoopDataProp
   @observable public feedText: string
+  public deptList: any[] = []
 
   public userService: UserService
   public groupService: GroupService
   public coopService: CoopService
+  public roleService: RoleService
 
   constructor (props: any) {
     super(props)
     this.userService = props.userService
     this.groupService = props.groupService
     this.coopService = props.coopService
+    this.roleService = props.roleService
     this.refresh()
+    this.getDeptList()
   }
 
   public init = () => {
@@ -80,6 +84,13 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
         id,
         feedback_list: res.data.feedback_list
       }
+    }
+  }
+
+  public async getDeptList () {
+    const res: any = await this.roleService.getDeptList()
+    if (res.status === 0) {
+      this.deptList = res.data
     }
   }
 
@@ -198,8 +209,8 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
             value={this.coopData.coop_dep}
             onChange={(value: any) => { this.coopData.coop_dep = value }} >
             {
-              Bean.DEP_SEL_LIST.map((item: any, index: number) => (
-                <Select.Option key={index} value={item.value} >{item.name}</Select.Option>
+              this.deptList.map((item: any, index: number) => (
+                <Select.Option key={index} value={item} >{item}</Select.Option>
               ))
             }
           </Select>

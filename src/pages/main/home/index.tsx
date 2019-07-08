@@ -59,7 +59,7 @@ export default class Home extends React.Component<HomePorps, {}> {
         this.isFullScreen = true
         return
       } else if (event.data.type === 'toDigitalInfoCoop' || event.data.type === '情报协作') {
-        targetMenuObj =  Util.findMenuByName('情报协作', menuList)
+        targetMenuObj =  Util.findMenuByName('数据协作', menuList)
         this.props.history.push(`/main/cooperate?id=${targetMenuObj.id}&parent_id=${targetMenuObj.parent_id}`)
       } else if (event.data.type === 'toDigitalTask' || event.data.type === '任务预警中心') {
         targetMenuObj =  Util.findMenuByName('任务预警中心', menuList)
