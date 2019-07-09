@@ -63,22 +63,26 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     const item: any = this.menuStore.getMenu()
     if (item) {
       this.selectItem = [item.id]
-      this.selectExpand = [item.parent_id]
+      this.selectExpand = item.parent_id
     }
     const list: any = await this.menuStore.getMenuList()
+    // debugger
+    console.log('list', list)
     if (list && list.length > 0) {
       this.menuList = list
       return
     }
     const res = await this.menuService.getMenuList()
     if (res.status === 0) {
-      // Util.setMenu(res.data)
+      Util.setMenu(res.data)
+      // debugger
       this.menuList = res.data
+      console.log('this.menuList', this.menuList)
       this.menuStore.setMenuList(this.menuList)
       if (!item) {
         const select: any = this.menuList.slice()[0]
         this.selectItem = [select.id]
-        this.selectExpand = [select.parent_id]
+        this.selectExpand = select.parent_id
         Cookies.set('first_menu_cache', JSON.stringify(select))
         const href: string = await this.menuCache(select)
 
@@ -208,7 +212,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
       const map: any = Util.getHrefMap(search)
       this.selectItem = [map.id]
       if (map.parent_id) {
-        this.selectExpand = [map.parent_id]
+        this.selectExpand = map.parent_id
       }
     }
    
@@ -232,11 +236,9 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     if (this.menuList.length) {
       isHideGoHome = this.menuList.length === 1 || this.menuList[0].type === 'static'
     }
-    
     return (
       <div className="main">
         <HeaderNav userProfile={this.userProfile} goHome={this.goHome} toggle={this.toggleMenu} sigout={this.sigout} isHideGoHome={isHideGoHome}/>
-        {/* <button className="full-screen-btn" ref={this.fullScreenBtn} onClick={this.requestFullscreen}>全屏</button> */}
         <div className="main-body">
           <div className="menu-slide" onMouseEnter={this.showMenu}></div>
           <div onMouseLeave={this.hideMenu} className={`left-menu ${this.collapsed ? '' : 'unexpand' }`}>

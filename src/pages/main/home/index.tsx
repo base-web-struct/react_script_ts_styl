@@ -44,9 +44,8 @@ export default class Home extends React.Component<HomePorps, {}> {
         const originArray = this.url.split(':')
         BDPOrigin = originArray[0] + ':' + originArray[1]
       }
-
       if (event.origin !== BDPOrigin) {
-        return
+        // return
       }
       if (event.data.type === 'getToken') {
         const account: any = this.userStore.getAccount()
@@ -59,12 +58,14 @@ export default class Home extends React.Component<HomePorps, {}> {
         this.isFullScreen = true
         return
       } else if (event.data.type === 'toDigitalInfoCoop' || event.data.type === '情报协作') {
-        targetMenuObj =  Util.findMenuByName('数据协作', menuList)
+        // targetMenuObj =  Util.findMenuByName('数据协作', menuList)
+        targetMenuObj =  Util.findMenuByName('情报协作', menuList)
+        // debugger
         this.props.history.push(`/main/cooperate?id=${targetMenuObj.id}&parent_id=${targetMenuObj.parent_id}`)
       } else if (event.data.type === 'toDigitalTask' || event.data.type === '任务预警中心') {
         targetMenuObj =  Util.findMenuByName('任务预警中心', menuList)
         this.props.history.push(`/main/advance?id=${targetMenuObj.id}&parent_id=${targetMenuObj.parent_id}`)
-      } else {
+      } else if (event.data.type) {
         targetMenuObj =  Util.findMenuByName(event.data.type, menuList)
         this.props.history.push(`/main/home?id=${targetMenuObj.id}&parent_id=${targetMenuObj.parent_id}&href=${encodeURIComponent(targetMenuObj.href)}`)
       }
@@ -81,8 +82,8 @@ export default class Home extends React.Component<HomePorps, {}> {
     if (this.isFullScreen) {
       return Bean.FH_MAP_URL
     } else {
-      return (this.url.indexOf('http://') > -1) ? (this.url) : (`http://${this.url}`)
-      // return 'http://localhost:9300'
+      // return (this.url.indexOf('http://') > -1) ? (this.url) : (`http://${this.url}`)
+      return 'http://localhost:9300'
     }
     
   }

@@ -7,6 +7,7 @@ import Bean from 'src/beans'
 import Assign from './modals/assign'
 import FeedBack from './modals/feedback'
 import Detail from './modals/detail'
+import AddTask from './modals/add_task'
 import Util from 'src/utils';
 
 @inject('msgService')
@@ -26,13 +27,15 @@ class Advance extends React.Component<{}, {}> {
   @observable public assignRef: any
   @observable public feedbackRef: any
   @observable public detailRef: any
+  @observable public addTaskRef: any
   @observable public pagination: any
   @observable public chooseTask: string
   @observable public scrollHeight: number
   @observable public assignModal: boolean
   @observable public feedbackModal: boolean
   @observable public detailModal: boolean
-  @observable public taskType: number = 1
+  @observable public addTaskModal: boolean
+  @observable public taskType: number = 0
 
   constructor (props: any) {
     super(props)
@@ -97,6 +100,10 @@ class Advance extends React.Component<{}, {}> {
     this.detailRef = ref
   }
 
+  public onAddTaskRef = (ref: React.Component) => {
+    this.addTaskRef = ref
+  }
+
   public feedback = (data: any) => {
     this.feedbackRef.init(data)
     this.feedbackModal = true
@@ -113,6 +120,10 @@ class Advance extends React.Component<{}, {}> {
 
   public closeDetail = () => {
     this.detailModal = false
+  }
+
+  public closeAddTask = () => {
+    this.addTaskModal = false
   }
 
   public finish = (data: any) => {
@@ -217,23 +228,32 @@ class Advance extends React.Component<{}, {}> {
         }
       }
     ]
-    const res: any = await this.msgService.getTaskTree()
+    this.initTaskList()
+  }
+  
+  public async initTaskList (isAddTask: boolean = false) {
+    const res: any = await this.msgService.getTaskTree({
+      sys_type: Bean.TASK_TYPE_MAP[this.taskType]
+    })
     if (res.status === 0) {
       this.taskList = res.data
       this.taskList.forEach((item: any) => {
         this.expandList = [...this.expandList, `${item.id}`]
       })
-      const task: any = await new Promise((resolve: any) => {
-        this.taskList.filter((item: any): boolean | void => {
-          if (item.children && item.children.length > 0) {
-            if (item.children[0]) {
-              resolve(item.children[0])
-              return true
+      if (!isAddTask) {
+        const task: any = await new Promise((resolve: any) => {
+          this.taskList.filter((item: any): boolean | void => {
+            if (item.children && item.children.length > 0) {
+              if (item.children[0]) {
+                resolve(item.children[0])
+                return true
+              }
             }
-          }
+          })
         })
-      })
-      this.chooseTask = task.id
+        this.chooseTask = task.id
+      }
+      
       this.searchList(this.chooseTask)
     }
   }
@@ -246,16 +266,37 @@ class Advance extends React.Component<{}, {}> {
   }
 
   public changeTaskType (taskType: number) {
+    if (this.taskType === taskType) {
+      return
+    }
     this.taskType = taskType
+    this.taskList = []
+    this.msgList = []
+    this.initTaskList()
   }
 
   public changeTaskPanel = (e: string[]) => {
     this.expandList = e
   }
+  
+  public addTask = () => {
+    this.addTaskRef.initUsers()
+    this.addTaskModal = true
+
+  }
+
+  public BreadcrumbItemText = (typeIndex: number): React.ReactNode => {
+    return <span onClick={this.changeTaskType.bind(this, typeIndex)} className={this.taskType === typeIndex ? 'active' : ''}>{Bean.TASK_TYPE_MAP[typeIndex]}</span>
+  }
 
   public render () {
     return (
       <div className="advance-main">
+        <AddTask
+          onRef={this.onAddTaskRef}
+          visible={this.addTaskModal}
+          close={this.closeAddTask}
+          refresh={this.initTaskList.bind(this, true)}/>
         <Assign
           onRef={this.onAssignRef}
           visible={this.assignModal}
@@ -273,42 +314,63 @@ class Advance extends React.Component<{}, {}> {
         <div className="advance-tabs">
           <Breadcrumb className="task-type">
             <Breadcrumb.Item>
-              <span onClick={this.changeTaskType.bind(this, 1)} className={this.taskType === 1 ? 'active' : ''}>智能任务</span>
+              {this.BreadcrumbItemText(0)}
             </Breadcrumb.Item>
             <Breadcrumb.Item>  
-              <span onClick={this.changeTaskType.bind(this, 2)} className={this.taskType === 2 ? 'active' : ''}>自建任务</span>
+              {this.BreadcrumbItemText(1)}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <span onClick={this.changeTaskType.bind(this, 3)} className={this.taskType === 3 ? 'active' : ''}>外部任务</span>
+              {this.BreadcrumbItemText(2)}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="advance-con">
-            <div className="con-left">
-                <Collapse
-                  activeKey={this.expandList}
-                  onChange={this.changeTaskPanel}>
+          <div className="advance-con-wrapper">
+            {
+              this.taskType === 1 && 
+              <Button className="add-task" icon="plus" onClick={this.addTask} type="primary">
+                新建任务
+              </Button>
+            }
+            <div className="advance-con">
+              <div className="con-left">
+                {
+                  this.taskType === 0 ? 
+                  <Collapse
+                    activeKey={this.expandList}
+                    onChange={this.changeTaskPanel}>
+                    {
+                      this.taskList.map((item: any) => {
+                        return (
+                          <Collapse.Panel header={`${item.name}(${item.count})`}  key={`${item.id}`}>
+                            <ul>
+                              {
+                                (item.children && item.children.length > 0) ? (
+                                  item.children.map((n: any) => {
+                                    return (
+                                      <li className={`${(this.chooseTask === n.id) ? ('selected') : ('')}`} onClick={this.chooseMsg.bind(this, n)} key={n.id}>{`${n.name}(${n.count})`}</li>
+                                    )
+                                  })
+                                ) : ('')
+                              }
+                            </ul>
+                          </Collapse.Panel>
+                        )
+                      })
+                    }
+                  </Collapse> 
+                  : 
+                  <ul>
                   {
-                    this.taskList.map((item: any) => {
+                    this.taskList.length && this.taskList[0].children.map((item: any) => {
                       return (
-                        <Collapse.Panel header={`${item.name}(${item.count})`}  key={`${item.id}`}>
-                          <ul>
-                            {
-                              (item.children && item.children.length > 0) ? (
-                                item.children.map((n: any) => {
-                                  return (
-                                    <li className={`${(this.chooseTask === n.id) ? ('selected') : ('')}`} onClick={this.chooseMsg.bind(this, n)} key={n.id}>{`${n.name}(${n.count})`}</li>
-                                  )
-                                })
-                              ) : ('')
-                            }
-                          </ul>
-                        </Collapse.Panel>
+                        <li className={`${(this.chooseTask === item.id) ? ('selected') : ('')}`} onClick={this.chooseMsg.bind(this, item)} key={item.id}>{`${item.name}(${item.count})`}</li>
                       )
                     })
                   }
-                </Collapse>
-              </div>
-            <div ref={this.tableBox} className="con-right">
+                  </ul>
+                }
+
+                </div>
+              <div ref={this.tableBox} className="con-right">
               <Table
                 rowKey="id"
                 bordered
@@ -324,6 +386,7 @@ class Advance extends React.Component<{}, {}> {
                 }}
                 columns={this.tableConfig}
                 dataSource={this.msgList} />
+            </div>
             </div>
           </div>
         </div>

@@ -55,6 +55,7 @@ class Cooperate extends React.Component<{}, {}> {
 
   public openAddCoop = () => {
     this.addCoopRef.init()
+    this.isDetail = false
     this.addCoopModal = true
   }
 
@@ -99,6 +100,11 @@ class Cooperate extends React.Component<{}, {}> {
     await this.addCoopRef.feed(data.id)
     this.addCoopModal = true
   }
+  public showFeed = (data: any) => {
+    this.isDetail = false
+    this.feed(data)
+  }
+
   public showDetail = (data: any) => {
     this.isDetail = true
     this.feed(data)
@@ -174,7 +180,7 @@ class Cooperate extends React.Component<{}, {}> {
               }
               {
                 ((data.status === 2 || data.status === 1) && !data.is_owner) ? (
-                  <Button className="feed" onClick={this.feed.bind(this, data)}>反馈</Button>
+                  <Button className="feed" onClick={this.showFeed.bind(this, data)}>反馈</Button>
                 ) : ('')
               }
               {

@@ -6,6 +6,7 @@ import _ from 'lodash'
 import { UserService } from 'src/services/user'
 import { observable } from 'mobx'
 import { MsgService } from 'src/services/msg'
+import { TaskService } from 'src/services/task'
 
 interface AssignProps {
   visible: boolean
@@ -19,39 +20,40 @@ interface PageData {
   page_no: number
 }
 
-@inject('userService', 'msgService')
+@inject('userService', 'msgService', 'taskService')
 @observer
 class Assign extends React.Component<AssignProps, {}> {
 
   public userService: UserService
   public msgService: MsgService
+  public taskService: TaskService
   public pageData: PageData
-  public msgId: string = ''
 
   @observable public seacrhText: string = ''
   @observable public userList: any[] = []
   @observable public chooseUserList: any[] = []
   @observable public demand: string = ''
+  @observable public taskName: string = ''
+  @observable public taskDescribe: string = ''
 
   constructor (props: any) {
     super(props)
     this.userService = props.userService
     this.msgService = props.msgService
+    this.taskService = props.taskService
     this.pageData = {
       page_size: 20,
       page_no: 1
     }
   }
 
-  public initUsers = (id: string = '') => {
-    this.msgId = id
+  public initUsers = () => {
     this.seacrhText = ''
     this.searchUsers()
   }
 
   public searchUsers = async () => {
     const res: any = await this.userService.getUseList({
-      ...this.pageData,
       search_content: this.seacrhText
     })
     if (res.status === 0) {
@@ -66,6 +68,10 @@ class Assign extends React.Component<AssignProps, {}> {
   }
 
   public ok = async () => {
+    if (!this.taskName) {
+      message.error('请输入任务名称!')
+      return
+    }
     if (this.chooseUserList.length === 0) {
       message.error('至少选择一个接收人!')
       return
@@ -75,10 +81,11 @@ class Assign extends React.Component<AssignProps, {}> {
       putList.push(item.id)
     })
 
-    const res: any = await this.msgService.sendMsg({
-      msg_id: this.msgId,
+    const res: any = await this.taskService.addSelfTask({
       user_id_list: putList,
-      demand: this.demand
+      demand: this.demand,
+      task_name: this.taskName,
+      task_describe: this.taskDescribe
     })
     if (res.status === 0) {
       message.success('派发成功')
@@ -118,7 +125,7 @@ class Assign extends React.Component<AssignProps, {}> {
 
     return (
       <Modal
-        title="派发"
+        title="新建任务"
         centered
         className="assign-main"
         cancelText={'取消'}
@@ -127,12 +134,18 @@ class Assign extends React.Component<AssignProps, {}> {
         onOk={this.ok}
         onCancel={this.cancel}>  
         <div className="form-input">
+            <label>任务名称</label>
+            <Input value={this.taskName} onChange={e => { this.taskName = e.target.value }} />
+          </div>
+        <div className="form-input">
           <label>接收人</label>
-          <Icon type="search" />
-          <Input
-            value={this.seacrhText}
-            onChange={(e: any) => this.seacrhText = e.target.value}
-            onKeyPress={this.enterSearch}/>
+          <div className="search-input">
+            <Icon type="search" className="search-icon"/>
+            <Input
+              value={this.seacrhText}
+              onChange={(e: any) => this.seacrhText = e.target.value}
+              onKeyPress={this.enterSearch}/>
+          </div>
         </div>
         <ul className="res-list">
           {
@@ -168,6 +181,14 @@ class Assign extends React.Component<AssignProps, {}> {
             placeholder="请输入任务要求(选填)"
             value={this.demand}
             onChange={(e: any) => this.demand = e.target.value}
+          />
+        </div>
+        <div className="form-input area">
+          <label>任务描述</label>
+          <Input.TextArea
+            placeholder="请输入任务描述(选填)"
+            value={this.taskDescribe}
+            onChange={(e: any) => this.taskDescribe = e.target.value}
           />
         </div>
       </Modal>

@@ -40,11 +40,13 @@ class Detail extends React.Component<DetailProps, {}> {
     })
     if (res.status === 0) {
       this.detailData = res.data
-      this.schema = JSON.parse(this.detailData.schema)
-      const data: any = JSON.parse(this.detailData.data)
-      this.schema.forEach((item: any, index: number) => {
-        this.baseData[item.name] = data[index]
-      })
+      if (this.detailData.schema) {
+        this.schema = JSON.parse(this.detailData.schema)
+        const data: any = JSON.parse(this.detailData.data)
+        this.schema.forEach((item: any, index: number) => {
+          this.baseData[item.name] = data[index]
+        })
+      }
     }
   }
 
@@ -111,7 +113,9 @@ class Detail extends React.Component<DetailProps, {}> {
             <label>任务状态</label>
             <div className="item-con">{Bean.MSG_STATUS[this.detailData.status]}</div>
           </div>
-          <div className="form-input origin">
+          {
+            this.schema.length ?
+            <div className="form-input origin">
             <label>原始数据</label>
             <div className="item-con">
               <Row>
@@ -125,7 +129,8 @@ class Detail extends React.Component<DetailProps, {}> {
                 }
               </Row>
             </div>
-          </div>
+          </div> : ''
+          }
           <div className="form-input list">
             <label>反馈列表</label>
             <div className="item-list">

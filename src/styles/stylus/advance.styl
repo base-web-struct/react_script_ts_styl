@@ -27,112 +27,136 @@
           &.active
             color:#62aeff;
 
-    .advance-con
-      width: 100%;
+    .advance-con-wrapper
+      width: 100%;  
       height calc(100% - 30px);
       background-color: rgba(4, 50, 100, .51);
       border: 1px solid rgba(11, 141, 246, .3);
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
+      
+      .add-task
+        margin: 10px 0 0 15px;
 
-      .con-left
-        width: 200px;
-        height 100%;
-        
-        .ant-collapse
-          width: 100%;
+      .advance-con
+        width: 100%;  
+        height calc(100% - 30px);
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+
+        .con-left
+          width: 200px;
           height 100%;
-          background-color: transparent;
-          border: 0;
 
-          .ant-collapse-item
-            border: 0;
-            margin-bottom: 20px;
-            
-            .ant-collapse-header
+          & > ul
+            width: 100%;
+            & > li
               width: 100%;
               height 40px;
+              background-color: rgba(41, 121, 255, .3);
+              color: rgba(255, 255, 255, .8);
               display: flex;
               align-items: center;
-              padding: 0 16px;
-              color: rgba(255, 255, 255, .8);
-              background: -webkit-linear-gradient(left, rgba(46, 163, 243, 1), rgba(46, 163, 243, .1));
+              justify-content: center;
+              border-bottom: 1px solid rgba(4, 50, 100, .51);
+              cursor: pointer;
 
-              .ant-collapse-arrow
-                position: static;
-                transform: translateY(0);
-                margin-right: 5px;
-
-            .ant-collapse-content
-              border: 0;
-              background-color: transparent;
-
-              .ant-collapse-content-box
-                padding: 0;
-                & > ul
-                  width: 100%;
-                  & > li
-                    width: 100%;
-                    height 40px;
-                    background-color: rgba(41, 121, 255, .3);
-                    color: rgba(255, 255, 255, .8);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-bottom: 1px solid rgba(4, 50, 100, .51);
-                    cursor: pointer;
-
-                    &.selected,
-                    &:hover
-                      background-color: rgba(41, 157, 242, .6);
-
-        
-    .con-right
-      width: calc(100% - 220px);
-      height 100%;
-      padding: 0 15px;
-
-      .ant-table
-        .op-box
-          display: flex;
-          .ant-btn[disabled]
-            &.feed
-              background-color: rgba(255, 107, 39, .4);
-              border: 1px solid rgba(255, 107, 39, .4);
-              color: rgba(255, 255, 255, .8);
-            &.finish
-              background-color: rgba(41, 157, 242, .4);
-              border: 1px solid rgba(41, 157, 242, .4);
-              color: rgba(255, 255, 255, .8);
-
-            &.assign
-              background-color: rgba(125, 173, 240, .4);
-              border: 1px solid rgba(125, 173, 240, .4);
-              color: rgba(255, 255, 255, .8);
-          .ant-btn
-            width: 60px;
-            height 24px;
-            margin-right: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            font-szie: 12px;
+              &.selected,
+              &:hover
+                background-color: rgba(41, 157, 242, .6);
+          
+          .ant-collapse
+            width: 100%;
+            height 100%;
             background-color: transparent;
+            border: 0;
 
-            &.receive
-              border: 1px solid rgba(255, 255, 255, .8);
-              color: rgba(255, 255, 255, .8);
-            &.feed
-              border: 1px solid rgb(255, 107, 39);
-              color: rgb(255, 107, 39);
-            &.finish
-              border: 1px solid rgb(103, 185, 245);
-              color: rgb(103, 185, 245);
-            &.assign
-              border: 1px solid rgb(125, 173, 240);
-              color: rgb(125, 173, 240);
+            .ant-collapse-item
+              border: 0;
+              margin-bottom: 20px;
+              
+              .ant-collapse-header
+                width: 100%;
+                height 40px;
+                display: flex;
+                align-items: center;
+                padding: 0 16px;
+                color: rgba(255, 255, 255, .8);
+                background: -webkit-linear-gradient(left, rgba(46, 163, 243, 1), rgba(46, 163, 243, .1));
+
+                .ant-collapse-arrow
+                  position: static;
+                  transform: translateY(0);
+                  margin-right: 5px;
+
+              .ant-collapse-content
+                border: 0;
+                background-color: transparent;
+
+                .ant-collapse-content-box
+                  padding: 0;
+
+                  & > ul
+                    width: 100%;
+                    & > li
+                      width: 100%;
+                      height 40px;
+                      background-color: rgba(41, 121, 255, .3);
+                      color: rgba(255, 255, 255, .8);
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      border-bottom: 1px solid rgba(4, 50, 100, .51);
+                      cursor: pointer;
+
+                      &.selected,
+                      &:hover
+                        background-color: rgba(41, 157, 242, .6);
+          
+        .con-right
+          width: calc(100% - 220px);
+          height 100%;
+          padding: 0 15px;
+
+          .ant-table
+            .op-box
+              display: flex;
+              .ant-btn[disabled]
+                &.feed
+                  background-color: rgba(255, 107, 39, .4);
+                  border: 1px solid rgba(255, 107, 39, .4);
+                  color: rgba(255, 255, 255, .8);
+                &.finish
+                  background-color: rgba(41, 157, 242, .4);
+                  border: 1px solid rgba(41, 157, 242, .4);
+                  color: rgba(255, 255, 255, .8);
+
+                &.assign
+                  background-color: rgba(125, 173, 240, .4);
+                  border: 1px solid rgba(125, 173, 240, .4);
+                  color: rgba(255, 255, 255, .8);
+              .ant-btn
+                width: 60px;
+                height 24px;
+                margin-right: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+                font-szie: 12px;
+                background-color: transparent;
+
+                &.receive
+                  border: 1px solid rgba(255, 255, 255, .8);
+                  color: rgba(255, 255, 255, .8);
+                &.feed
+                  border: 1px solid rgb(255, 107, 39);
+                  color: rgb(255, 107, 39);
+                &.finish
+                  border: 1px solid rgb(103, 185, 245);
+                  color: rgb(103, 185, 245);
+                &.assign
+                  border: 1px solid rgb(125, 173, 240);
+                  color: rgb(125, 173, 240);
         
 
 .assign-main
@@ -141,6 +165,16 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 5px;
+
+    .search-input
+      position relative
+      flex 1
+
+      .search-icon
+        position: absolute
+        left:0;
+        top:12px;
+        color: rgba(255, 255, 255, .8);
 
     &.area
       display: block;
@@ -161,7 +195,7 @@
         padding: 4px 11px;
 
     & > label 
-      width 40px;
+      width 60px;
       font-size: 12px;
       color: rgba(255, 255, 255, .8);
 
@@ -171,7 +205,7 @@
 
     & > i
       color: rgba(255, 255, 255, .8);
-      transform: translate(18px, -2px);
+      // transform: translate(18px, -2px);
 
   .res-list
     width: 100%;

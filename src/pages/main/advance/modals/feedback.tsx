@@ -106,7 +106,6 @@ class FeedBack extends React.Component<AddCoopProps, {}> {
         className="add-coop-modal"
         title="反馈"
         centered
-        maskClosable={false}
         cancelText={'取消'}
         okText={'确定'}
         visible={visible}

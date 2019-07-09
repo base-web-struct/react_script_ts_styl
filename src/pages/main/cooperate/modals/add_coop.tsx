@@ -28,12 +28,48 @@ interface CoopDataProp {
   feedback_list: any[]
 }
 
+// class ModalProps {
+//   public className: string = 'add-coop-modal'
+//   public title: string = '情报协作表单'
+//   public centered: boolean = true
+//   public cancelText: string = '取消'
+//   public okText: string = '确定'
+//   public visible: boolean
+//   public onOk: any
+//   public onCancel: any
+
+//   constructor (visible: boolean, onOk: any, onCancel: any) {
+//     this.visible = visible
+//     this.onOk = onOk
+//     this.onCancel = onCancel
+//   }
+// }
+
+// class ModalPropsWithoutFooter {
+//   public className: string = 'add-coop-modal'
+//   public title: string = '情报协作表单'
+//   public centered: boolean = true
+//   public cancelText: string = '取消'
+//   public okText: string = '确定'
+//   public visible: boolean
+//   public onOk: any
+//   public onCancel: any
+//   public footer: null
+
+//   constructor (visible: boolean, onOk: any, onCancel: any) {
+//     this.visible = visible
+//     this.onOk = onOk
+//     this.onCancel = onCancel
+//   }
+// }
+
 @inject('userService', 'groupService', 'coopService', 'roleService')
 @observer
 class AddCoop extends React.Component<AddCoopProps, {}> {
 
   @observable public coopData: CoopDataProp
   @observable public feedText: string
+  public modalPrps: any 
   public deptList: any[] = []
 
   public userService: UserService
@@ -49,6 +85,16 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
     this.roleService = props.roleService
     this.refresh()
     this.getDeptList()
+    this.modalPrps = {
+      className: 'add-coop-modal',
+      title: '情报协作表单',
+      centered: true,
+      cancelText: '取消',
+      okText: '确定',
+      visible: false,
+      onOk: this.ok,
+      onCancel: this.cancel
+    }
   }
 
   public init = () => {
@@ -173,25 +219,17 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
       return ''
     }
   }
+  
+  public componentWillReceiveProps () {
+    if (this.props.isDetail) {
+      this.modalPrps = {...this.modalPrps, footer: null}
+    }
+  }
 
   public render () {
-    const { visible } = this.props
-    let modalPrps: any = {
-      className: 'add-coop-modal',
-      title: '情报协作表单',
-      centered: true,
-      cancelText: '取消',
-      okText: '确定',
-      visible,
-      onOk: this.ok,
-      onCancel: this.cancel
-    }
-    if (this.props.isDetail) {
-      modalPrps = {...modalPrps, footer: null}
-    }
     return (
       <Modal 
-      {...modalPrps}
+      {...this.modalPrps} visible={this.props.visible}
       >
         <div className="form-input">
           <label>事项名称</label>
