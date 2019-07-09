@@ -219,17 +219,21 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
       return ''
     }
   }
-  
-  public componentWillReceiveProps () {
-    if (this.props.isDetail) {
+
+  public componentWillReceiveProps (nextProps: any) {
+    this.modalPrps.visible = nextProps.visible
+    if (nextProps.isDetail) {
       this.modalPrps = {...this.modalPrps, footer: null}
+    } else {
+      delete this.modalPrps.footer
     }
   }
 
   public render () {
+    const { isDetail } = this.props
     return (
       <Modal 
-      {...this.modalPrps} visible={this.props.visible}
+      {...this.modalPrps}
       >
         <div className="form-input">
           <label>事项名称</label>
@@ -281,7 +285,7 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
           </div>
         </div>
         {
-          this.coopData.id && !this.props.isDetail ? 
+          this.coopData.id && !isDetail ? 
             <div className="form-input area">
               <label>反馈</label>
               <Input.TextArea

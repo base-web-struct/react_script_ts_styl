@@ -66,8 +66,6 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
       this.selectExpand = item.parent_id
     }
     const list: any = await this.menuStore.getMenuList()
-    // debugger
-    console.log('list', list)
     if (list && list.length > 0) {
       this.menuList = list
       return
@@ -75,7 +73,6 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     const res = await this.menuService.getMenuList()
     if (res.status === 0) {
       Util.setMenu(res.data)
-      // debugger
       this.menuList = res.data
       console.log('this.menuList', this.menuList)
       this.menuStore.setMenuList(this.menuList)
@@ -90,7 +87,6 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
           this.props.history.push(href)
         }
       }
-      console.log(this.selectItem)
     } else {
       message.error(res.msg || '获取菜单失败')
     }
@@ -212,7 +208,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
       const map: any = Util.getHrefMap(search)
       this.selectItem = [map.id]
       if (map.parent_id) {
-        this.selectExpand = map.parent_id
+        this.selectExpand = JSON.parse(map.parent_id)
       }
     }
    
