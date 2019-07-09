@@ -180,7 +180,6 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
       className: 'add-coop-modal',
       title: '情报协作表单',
       centered: true,
-      maskClosable: false,
       cancelText: '取消',
       okText: '确定',
       visible,

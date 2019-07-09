@@ -48,6 +48,7 @@ export default class HeaderNav extends React.Component<HeaderProps, {}> {
   }
  
   public render () {
+    const userProfile = this.props.userProfile
     return (
       <div className="header-main">
         <div className="left-box">
@@ -64,18 +65,24 @@ export default class HeaderNav extends React.Component<HeaderProps, {}> {
           }
         </div>
         <div className="mid-box">
-          <div className="title"></div>
+        {
+          userProfile ? 
+          <div className="title">
+            <i className="home-logo"></i>
+              <span className="title-text">{userProfile.parent_department ? userProfile.parent_department : '武汉市公安局'}数字派出所</span> 
+          </div>
+          : ''
+        }
         </div>
         <div className="right-box">
-          {this.props.userProfile ? 
-          <span>
-            <span className="place">{this.props.userProfile.name}</span>
-            <span className="place">{this.props.userProfile.police_id}</span>
-            <span className="place">{this.props.userProfile.department}</span>
-          </span>
-           : 
-            ''}
-         
+          {
+            userProfile ? 
+            <span>
+              <span className="place">{userProfile.name}</span>
+              <span className="place">{userProfile.police_id}</span>
+              <span className="place">{userProfile.department}</span>
+            </span> : ''
+          }         
           <span className="time" ref={this.timeStamp}>
           </span>
           <span className="logout" onClick={this.sigout}>退出</span>

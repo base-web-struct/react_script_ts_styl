@@ -1,12 +1,13 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { MsgService } from 'src/services/msg'
-import { Collapse, Button, Table, Modal, message } from 'antd'
+import { Collapse, Button, Table, Modal, message, Breadcrumb } from 'antd'
 import { observable } from 'mobx'
 import Bean from 'src/beans'
 import Assign from './modals/assign'
 import FeedBack from './modals/feedback'
 import Detail from './modals/detail'
+import Util from 'src/utils';
 
 @inject('msgService')
 @observer
@@ -31,6 +32,7 @@ class Advance extends React.Component<{}, {}> {
   @observable public assignModal: boolean
   @observable public feedbackModal: boolean
   @observable public detailModal: boolean
+  @observable public taskType: number = 1
 
   constructor (props: any) {
     super(props)
@@ -157,6 +159,15 @@ class Advance extends React.Component<{}, {}> {
         )
       },
       {
+        width: 150,
+        title: '发起时间',
+        dataIndex: 'create_time',
+        key: 'create_time',
+        render: (data: any) => (
+          <div>{Util.momentDate(data)}</div>
+        )
+      },
+      {
         width: 100,
         title: '状态',
         dataIndex: 'status',
@@ -234,6 +245,14 @@ class Advance extends React.Component<{}, {}> {
     }
   }
 
+  public changeTaskType (taskType: number) {
+    this.taskType = taskType
+  }
+
+  public changeTaskPanel = (e: string[]) => {
+    this.expandList = e
+  }
+
   public render () {
     return (
       <div className="advance-main">
@@ -251,48 +270,61 @@ class Advance extends React.Component<{}, {}> {
           visible={this.detailModal}
           close={this.closeDetail}
           onRef={this.onDetailRef}/>
-        <div className="advance-con">
-          <div className="con-left">
-            <Collapse
-              activeKey={this.expandList}
-              onChange={(e: string[]) => this.expandList = e}>
-              {
-                this.taskList.map((item: any) => {
-                  return (
-                    <Collapse.Panel header={`${item.name}(${item.count})`}  key={`${item.id}`}>
-                      <ul>
-                        {
-                          (item.children && item.children.length > 0) ? (
-                            item.children.map((n: any) => {
-                              return (
-                                <li className={`${(this.chooseTask === n.id) ? ('selected') : ('')}`} onClick={this.chooseMsg.bind(this, n)} key={n.id}>{`${n.name}(${n.count})`}</li>
-                              )
-                            })
-                          ) : ('')
-                        }
-                      </ul>
-                    </Collapse.Panel>
-                  )
-                })
-              }
-            </Collapse>
-          </div>
-          <div ref={this.tableBox} className="con-right">
-            <Table
-              rowKey="id"
-              bordered
-              size="small"
-              scroll={{
-                x: false,
-                y: this.scrollHeight
-              }}
-              pagination={{
-                ...this.pagination,
-                current: this.page,
-                total: this.total
-              }}
-              columns={this.tableConfig}
-              dataSource={this.msgList} />
+        <div className="advance-tabs">
+          <Breadcrumb className="task-type">
+            <Breadcrumb.Item>
+              <span onClick={this.changeTaskType.bind(this, 1)} className={this.taskType === 1 ? 'active' : ''}>智能任务</span>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>  
+              <span onClick={this.changeTaskType.bind(this, 2)} className={this.taskType === 2 ? 'active' : ''}>自建任务</span>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span onClick={this.changeTaskType.bind(this, 3)} className={this.taskType === 3 ? 'active' : ''}>外部任务</span>
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="advance-con">
+            <div className="con-left">
+                <Collapse
+                  activeKey={this.expandList}
+                  onChange={this.changeTaskPanel}>
+                  {
+                    this.taskList.map((item: any) => {
+                      return (
+                        <Collapse.Panel header={`${item.name}(${item.count})`}  key={`${item.id}`}>
+                          <ul>
+                            {
+                              (item.children && item.children.length > 0) ? (
+                                item.children.map((n: any) => {
+                                  return (
+                                    <li className={`${(this.chooseTask === n.id) ? ('selected') : ('')}`} onClick={this.chooseMsg.bind(this, n)} key={n.id}>{`${n.name}(${n.count})`}</li>
+                                  )
+                                })
+                              ) : ('')
+                            }
+                          </ul>
+                        </Collapse.Panel>
+                      )
+                    })
+                  }
+                </Collapse>
+              </div>
+            <div ref={this.tableBox} className="con-right">
+              <Table
+                rowKey="id"
+                bordered
+                size="small"
+                scroll={{
+                  x: false,
+                  y: this.scrollHeight
+                }}
+                pagination={{
+                  ...this.pagination,
+                  current: this.page,
+                  total: this.total
+                }}
+                columns={this.tableConfig}
+                dataSource={this.msgList} />
+            </div>
           </div>
         </div>
       </div>

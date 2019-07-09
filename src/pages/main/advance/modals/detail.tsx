@@ -54,6 +54,9 @@ class Detail extends React.Component<DetailProps, {}> {
 
   public cancel = () => {
     this.props.close()
+    this.detailData = {
+      feedback_list: []
+    }
     
   }
 
@@ -70,6 +73,10 @@ class Detail extends React.Component<DetailProps, {}> {
         centered
         visible={visible}
         onCancel={this.cancel}>
+          <div className="form-input col2">
+            <label>流水号</label>
+            <div className="item-con">{this.detailData.id}</div>
+          </div>
           <div className="form-input col4">
             <label>任务名称</label>
             <div className="item-con">{this.detailData.task_name}</div>

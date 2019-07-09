@@ -36,7 +36,7 @@ class Login extends React.Component<LoginProps, {}> {
 
   public login = async (e: any): Promise<any> => {
     e.preventDefault()
-    this.requestFullscreen()
+    // this.requestFullscreen()
     this.props.form.validateFields(async (err: any, values: any) => {
       if (!err) {
         const putData: any = {

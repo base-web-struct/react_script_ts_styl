@@ -4,67 +4,88 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  .advance-con
+  
+  .advance-tabs
     width: 100%;
     max-width: 1400px;
-    height calc(100% - 30px);
-    background-color: rgba(4, 50, 100, .51);
-    border: 1px solid rgba(11, 141, 246, .3);
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
+    height 100%;
 
-    .con-left
-      width: 200px;
-      height 100%;
-      
-      .ant-collapse
-        width: 100%;
-        height 100%;
-        background-color: transparent;
-        border: 0;
+    .task-type 
+      margin: 5px 0;
+      padding-left: 5px;
 
-        .ant-collapse-item
-          border: 0;
-          margin-bottom: 20px;
+      .ant-breadcrumb-link
+
+        & > span
+          color:rgba(255, 255, 255, .8);
+          font-size: 16px;
+          cursor: pointer;
+
+          &:hover
+            color:#62aeff;
           
-          .ant-collapse-header
-            width: 100%;
-            height 40px;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            color: rgba(255, 255, 255, .8);
-            background: -webkit-linear-gradient(left, rgba(46, 163, 243, 1), rgba(46, 163, 243, .1));
+          &.active
+            color:#62aeff;
 
-            .ant-collapse-arrow
-              position: static;
-              transform: translateY(0);
-              margin-right: 5px;
+    .advance-con
+      width: 100%;
+      height calc(100% - 30px);
+      background-color: rgba(4, 50, 100, .51);
+      border: 1px solid rgba(11, 141, 246, .3);
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
 
-          .ant-collapse-content
+      .con-left
+        width: 200px;
+        height 100%;
+        
+        .ant-collapse
+          width: 100%;
+          height 100%;
+          background-color: transparent;
+          border: 0;
+
+          .ant-collapse-item
             border: 0;
-            background-color: transparent;
+            margin-bottom: 20px;
+            
+            .ant-collapse-header
+              width: 100%;
+              height 40px;
+              display: flex;
+              align-items: center;
+              padding: 0 16px;
+              color: rgba(255, 255, 255, .8);
+              background: -webkit-linear-gradient(left, rgba(46, 163, 243, 1), rgba(46, 163, 243, .1));
 
-            .ant-collapse-content-box
-              padding: 0;
-              & > ul
-                width: 100%;
-                & > li
+              .ant-collapse-arrow
+                position: static;
+                transform: translateY(0);
+                margin-right: 5px;
+
+            .ant-collapse-content
+              border: 0;
+              background-color: transparent;
+
+              .ant-collapse-content-box
+                padding: 0;
+                & > ul
                   width: 100%;
-                  height 40px;
-                  background-color: rgba(41, 121, 255, .3);
-                  color: rgba(255, 255, 255, .8);
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  border-bottom: 1px solid rgba(4, 50, 100, .51);
-                  cursor: pointer;
+                  & > li
+                    width: 100%;
+                    height 40px;
+                    background-color: rgba(41, 121, 255, .3);
+                    color: rgba(255, 255, 255, .8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-bottom: 1px solid rgba(4, 50, 100, .51);
+                    cursor: pointer;
 
-                  &.selected,
-                  &:hover
-                    background-color: rgba(41, 157, 242, .6);
+                    &.selected,
+                    &:hover
+                      background-color: rgba(41, 157, 242, .6);
 
         
     .con-right
@@ -211,6 +232,7 @@
 
     & > label
       width: 50px;
+      text-align: right;
 
     & > .item-con
       width: calc(100% - 60px);
