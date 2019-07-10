@@ -74,7 +74,6 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     if (res.status === 0) {
       Util.setMenu(res.data)
       this.menuList = res.data
-      console.log('this.menuList', this.menuList)
       this.menuStore.setMenuList(this.menuList)
       if (!item) {
         const select: any = this.menuList.slice()[0]

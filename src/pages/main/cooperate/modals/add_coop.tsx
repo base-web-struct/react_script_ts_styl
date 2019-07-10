@@ -28,40 +28,21 @@ interface CoopDataProp {
   feedback_list: any[]
 }
 
-// class ModalProps {
-//   public className: string = 'add-coop-modal'
-//   public title: string = '情报协作表单'
-//   public centered: boolean = true
-//   public cancelText: string = '取消'
-//   public okText: string = '确定'
-//   public visible: boolean
-//   public onOk: any
-//   public onCancel: any
+class ModalProps {
+  public className: string = 'add-coop-modal'
+  public title: string = '情报协作表单'
+  public centered: boolean = true
+  public cancelText: string = '取消'
+  public okText: string = '确定'
+  public visible: boolean = false
+  public onOk: any
+  public onCancel: any
 
-//   constructor (visible: boolean, onOk: any, onCancel: any) {
-//     this.visible = visible
-//     this.onOk = onOk
-//     this.onCancel = onCancel
-//   }
-// }
-
-// class ModalPropsWithoutFooter {
-//   public className: string = 'add-coop-modal'
-//   public title: string = '情报协作表单'
-//   public centered: boolean = true
-//   public cancelText: string = '取消'
-//   public okText: string = '确定'
-//   public visible: boolean
-//   public onOk: any
-//   public onCancel: any
-//   public footer: null
-
-//   constructor (visible: boolean, onOk: any, onCancel: any) {
-//     this.visible = visible
-//     this.onOk = onOk
-//     this.onCancel = onCancel
-//   }
-// }
+  constructor (onOk: any, onCancel: any) {
+    this.onOk = onOk
+    this.onCancel = onCancel
+  }
+}
 
 @inject('userService', 'groupService', 'coopService', 'roleService')
 @observer
@@ -85,16 +66,7 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
     this.roleService = props.roleService
     this.refresh()
     this.getDeptList()
-    this.modalPrps = {
-      className: 'add-coop-modal',
-      title: '情报协作表单',
-      centered: true,
-      cancelText: '取消',
-      okText: '确定',
-      visible: false,
-      onOk: this.ok,
-      onCancel: this.cancel
-    }
+    this.modalPrps = new ModalProps(this.ok, this.cancel)
   }
 
   public init = () => {
