@@ -51,7 +51,7 @@ class Assign extends React.Component<AssignProps, {}> {
 
   public searchUsers = async () => {
     const res: any = await this.userService.getUseList({
-      ...this.pageData,
+      // ...this.pageData,
       search_content: this.seacrhText
     })
     if (res.status === 0) {
