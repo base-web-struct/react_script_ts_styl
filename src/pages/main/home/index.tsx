@@ -7,15 +7,15 @@ import Util from 'src/utils'
 import Bean from 'src/beans'
 import { RouteComponentProps } from 'react-router';
 
-interface HomePorps extends RouteComponentProps {
-  userStore: UserStore
-  menuStore: MenuStore
-  menu: any
-}
+// interface HomePorps extends RouteComponentProps {
+//   userStore: UserStore
+//   menuStore: MenuStore
+//   menu: any
+// }
 
 @inject('menuStore', 'userStore')
 @observer
-export default class Home extends React.Component<HomePorps, {}> {  
+export default class Home extends React.Component<RouteComponentProps, {}> {  
 
   public menuStore: MenuStore
   public userStore: UserStore

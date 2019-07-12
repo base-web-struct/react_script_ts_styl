@@ -8,7 +8,7 @@ import { observable } from 'mobx'
 import { MsgService } from 'src/services/msg'
 import { TaskService } from 'src/services/task'
 
-interface AssignProps {
+interface AddTaskProps {
   visible: boolean
   close: () => void
   onRef: (ref: React.Component) => void
@@ -22,7 +22,7 @@ interface PageData {
 
 @inject('userService', 'msgService', 'taskService')
 @observer
-class Assign extends React.Component<AssignProps, {}> {
+class Assign extends React.Component<AddTaskProps, {}> {
 
   public userService: UserService
   public msgService: MsgService

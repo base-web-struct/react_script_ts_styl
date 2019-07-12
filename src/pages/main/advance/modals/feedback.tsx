@@ -6,7 +6,7 @@ import { UserService } from 'src/services/user'
 import { GroupService } from 'src/services/group'
 import { MsgService } from 'src/services/msg'
 
-interface AddCoopProps {
+interface FeedBackProps {
   visible: boolean
   close: () => void
   onRef: (ref: React.Component) => void
@@ -22,7 +22,7 @@ interface UserData {
 
 @inject('userService', 'groupService', 'msgService')
 @observer
-class FeedBack extends React.Component<AddCoopProps, {}> {
+class FeedBack extends React.Component<FeedBackProps, {}> {
 
   public msgId: string = ''
   public msgName: string = ''
