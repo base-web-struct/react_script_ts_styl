@@ -176,6 +176,9 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
       const search = nextPrpos.location.search
       const map: any = Util.getHrefMap(search)
       this.selectItem = [map.id]
+      if (map.parent_id) {
+        this.selectExpand = [map.parent_id]
+      }
     }
    
   }

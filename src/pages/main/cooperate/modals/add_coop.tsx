@@ -1,10 +1,11 @@
 import * as React from 'react'
-import { Modal, Input, message } from 'antd'
+import { Modal, Input, message, Select } from 'antd'
 import { observable } from 'mobx'
 import { observer, inject } from 'mobx-react'
 import { UserService } from 'src/services/user'
 import { GroupService } from 'src/services/group'
 import { CoopService } from 'src/services/coop'
+import Bean from 'src/beans'
 
 export interface AddCoopProps {
   visible: boolean
@@ -167,10 +168,16 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
         </div>
         <div className="form-input">
           <label>协作部门</label>
-          <Input 
+          <Select
             disabled={!!this.coopData.id}
             value={this.coopData.coop_dep}
-            onChange={e => { this.coopData.coop_dep = e.target.value }}/>
+            onChange={(value: any) => { this.coopData.coop_dep = value }} >
+            {
+              Bean.DEP_SEL_LIST.map((item: any, index: number) => (
+                <Select.Option key={index} value={item.value} >{item.name}</Select.Option>
+              ))
+            }
+          </Select>
         </div>
         <div className="form-input area">
           <label>协作请求描述</label>

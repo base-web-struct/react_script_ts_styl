@@ -15,7 +15,10 @@ class Advance extends React.Component<{}, {}> {
   public msgService: MsgService
   public tableConfig: any[]
   public tableBox: React.RefObject<any>
+  public count: number
 
+  @observable public page: number = 1
+  @observable public total: number
   @observable public taskList: any[] = []
   @observable public msgList: any[] = []
   @observable public expandList: string[] = []
@@ -34,12 +37,10 @@ class Advance extends React.Component<{}, {}> {
     this.msgService = props.msgService
     this.init()
     this.pagination = {
-      current: 1,
       pageSize: 10,
-      total: 10,
       size: 'middle',
-      hideOnSinglePage: true,
-      onChange: this.changePage
+      onChange: this.changePage,
+      hideOnSinglePage: true
     }
   }
 
@@ -48,7 +49,8 @@ class Advance extends React.Component<{}, {}> {
   }
 
   public changePage = (page: number) => {
-    console.log(page)
+    this.page = page
+    this.searchList(this.chooseTask)
   }
 
   public receive = (data: any) => {
@@ -60,7 +62,7 @@ class Advance extends React.Component<{}, {}> {
       onOk: async () => {
         const res = await this.msgService.updateMsgStatus({
           id: data.id,
-          status: 1
+          status: 10
         })
         if (res.status === 0) {
           message.success('接收成功')
@@ -120,7 +122,7 @@ class Advance extends React.Component<{}, {}> {
       onOk: async () => {
         const res = await this.msgService.updateMsgStatus({
           id: data.id,
-          status: 3
+          status: 20
         })
         if (res.status === 0) {
           message.success('协作完成')
@@ -133,9 +135,14 @@ class Advance extends React.Component<{}, {}> {
   }
 
   public searchList = async (id: string) => {
-    const resp: any = await this.msgService.getMsgList({id: this.chooseTask})
+    const resp: any = await this.msgService.getMsgList({
+      id,
+      page_no: this.page,
+      page_size: this.pagination.pageSize
+    })
     if (resp.status === 0) {
       this.msgList = resp.data.list
+      this.total = resp.data.count
     }
   }
 
@@ -172,20 +179,21 @@ class Advance extends React.Component<{}, {}> {
                   <Button onClick={this.assign.bind(this, data)} className="assign">派发</Button>
                 </div>
               )
-            case 1:
+            case 10:
+            case 11:
               return (
                 <div className="op-box">
                   <Button onClick={this.feedback.bind(this, data)} className="feed">反馈</Button>
                   <Button onClick={this.finish.bind(this, data)} className="finish">完成</Button>
                 </div>
               )
-            case 2:
+            case 30:
               return (
                 <div className="op-box">
                   <Button disabled className="assign">已派发</Button>
                 </div>
               )
-            case 3:
+            case 20:
               return (
                 <div className="op-box">
                   <Button disabled className="finish">已完成</Button>
@@ -275,7 +283,11 @@ class Advance extends React.Component<{}, {}> {
                 x: false,
                 y: this.scrollHeight
               }}
-              pagination={this.pagination}
+              pagination={{
+                ...this.pagination,
+                current: this.page,
+                total: this.total
+              }}
               columns={this.tableConfig}
               dataSource={this.msgList} />
           </div>

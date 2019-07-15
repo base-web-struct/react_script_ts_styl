@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { MenuStore } from 'src/stores/modules/menu'
 import { UserStore } from 'src/stores/modules/user'
 import Util from 'src/utils'
+import Bean from 'src/beans'
 import { RouteComponentProps } from 'react-router';
 
 interface HomePorps extends RouteComponentProps {
@@ -36,7 +37,7 @@ export default class Home extends React.Component<HomePorps, {}> {
   }
   public componentDidMount () {
     window.addEventListener('message', async (event: any) => {
-      let BDPOrigin = 'http://10.73.92.144'
+      let BDPOrigin = Bean.BDP_ORIGIN
       if (this.url) {
         const originArray = this.url.split(':')
         BDPOrigin = originArray[0] + ':' + originArray[1]
@@ -64,7 +65,7 @@ export default class Home extends React.Component<HomePorps, {}> {
 
       if (event.data.type === 'toPersonManage') {
         targetMenuObj =  Util.findMenuByName('人口管理', menuList)
-        this.props.history.push(`/main/advance?id=${targetMenuObj.id}&href=${targetMenuObj.href}`)
+        this.props.history.push(`/main/advance?id=${targetMenuObj.id}&href=${targetMenuObj.href}&parent_id=${targetMenuObj.parent_id}`)
       }
       this.menuStore.setMenu(targetMenuObj)
 

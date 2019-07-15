@@ -164,23 +164,18 @@ class Cooperate extends React.Component<{}, {}> {
           return (
             <div className="op-box">
               {
-                (data.status === 0) ? (
+                (data.status === 0 && !data.is_owner) ? (
                   <Button className="receive" onClick={this.recive.bind(this, data)}>接收</Button>
                 ) : ('')
               }
               {
-                (data.status === 1 && !data.is_owner) ? (
+                ((data.status === 2 || data.status === 1) && !data.is_owner) ? (
                   <Button className="feed" onClick={this.feed.bind(this, data)}>反馈</Button>
                 ) : ('')
               }
               {
-                (data.status === 1 && data.is_owner) ? (
+                ((data.status === 2 || data.status === 0 || data.status === 1) && data.is_owner) ? (
                   <Button className="finish" onClick={this.finish.bind(this, data)}>完成</Button>
-                ) : ('')
-              }
-              {
-                (data.status === 2) ? (
-                  <Button className="feed" onClick={this.feed.bind(this, data)} type="primary">已反馈</Button>
                 ) : ('')
               }
               {

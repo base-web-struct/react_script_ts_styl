@@ -132,6 +132,33 @@ input
     border-color: rgb(36, 62, 100);
     box-shadow: none;
 
+.ant-select
+  .ant-select-selection
+    background-color: transparent;
+    font-size 12px;
+    color: rgba(255, 255, 255, .8);
+    border: 0;
+    border-bottom: 1px solid rgb(36, 62, 100);
+    border-radius: 0;
+
+    .ant-select-arrow
+      color: rgba(255, 255, 255, .8);
+
+    &:focus,
+    &:active
+      border-color: rgb(36, 62, 100);
+      box-shadow: none;
+
+.ant-select-dropdown-menu-item 
+  color: rgba(255, 255, 255, .8);
+  background-color: rgba(35, 81, 157, 1);
+.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
+.ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled),
+.ant-select-dropdown-menu-item:hover,
+.ant-select-dropdown-menu-item-selected
+  background-color: rgba(40, 152, 240, 1.00);
+  color: rgba(255, 255, 255, .8);
+
 .ant-pagination
   .ant-pagination-prev,
   .ant-pagination-next
