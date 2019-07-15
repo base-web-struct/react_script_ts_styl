@@ -40,11 +40,13 @@ class Detail extends React.Component<DetailProps, {}> {
     })
     if (res.status === 0) {
       this.detailData = res.data
-      this.schema = JSON.parse(this.detailData.schema)
-      const data: any = JSON.parse(this.detailData.data)
-      this.schema.forEach((item: any, index: number) => {
-        this.baseData[item.name] = data[index]
-      })
+      if (this.detailData.schema) {
+        this.schema = JSON.parse(this.detailData.schema)
+        const data: any = JSON.parse(this.detailData.data)
+        this.schema.forEach((item: any, index: number) => {
+          this.baseData[item.name] = data[index]
+        })
+      }
     }
   }
 
@@ -54,6 +56,9 @@ class Detail extends React.Component<DetailProps, {}> {
 
   public cancel = () => {
     this.props.close()
+    this.detailData = {
+      feedback_list: []
+    }
     
   }
 
@@ -64,12 +69,16 @@ class Detail extends React.Component<DetailProps, {}> {
     return (
       <Modal
         className="msg-detail-modal"
-        title="反馈"
+        title="详情"
         width={600}
         footer={null}
         centered
         visible={visible}
         onCancel={this.cancel}>
+          <div className="form-input col2">
+            <label>流水号</label>
+            <div className="item-con">{this.detailData.id}</div>
+          </div>
           <div className="form-input col4">
             <label>任务名称</label>
             <div className="item-con">{this.detailData.task_name}</div>
@@ -104,7 +113,9 @@ class Detail extends React.Component<DetailProps, {}> {
             <label>任务状态</label>
             <div className="item-con">{Bean.MSG_STATUS[this.detailData.status]}</div>
           </div>
-          <div className="form-input origin">
+          {
+            this.schema.length ?
+            <div className="form-input origin">
             <label>原始数据</label>
             <div className="item-con">
               <Row>
@@ -118,19 +129,20 @@ class Detail extends React.Component<DetailProps, {}> {
                 }
               </Row>
             </div>
-          </div>
+          </div> : ''
+          }
           <div className="form-input list">
             <label>反馈列表</label>
             <div className="item-list">
               <ul>
                 {
-                  this.detailData.feedback_list.map((item: any, index: number) => (
+                  this.detailData.feedback_list.length ? this.detailData.feedback_list.map((item: any, index: number) => (
                     <li key={index}>
                       <i></i>
                       <span className="time">{Util.momentDate(item.create_time)}</span>
                       <span>{item.content}</span>
                     </li>
-                  ))
+                  )) : <li className="no-info">无</li>
                 }
               </ul>
             </div>

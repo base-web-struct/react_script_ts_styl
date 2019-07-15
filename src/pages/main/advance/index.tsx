@@ -1,12 +1,14 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
 import { MsgService } from 'src/services/msg'
-import { Collapse, Button, Table, Modal, message } from 'antd'
+import { Collapse, Button, Table, Modal, message, Breadcrumb } from 'antd'
 import { observable } from 'mobx'
 import Bean from 'src/beans'
 import Assign from './modals/assign'
 import FeedBack from './modals/feedback'
 import Detail from './modals/detail'
+import AddTask from './modals/add_task'
+import Util from 'src/utils';
 
 @inject('msgService')
 @observer
@@ -25,12 +27,15 @@ class Advance extends React.Component<{}, {}> {
   @observable public assignRef: any
   @observable public feedbackRef: any
   @observable public detailRef: any
+  @observable public addTaskRef: any
   @observable public pagination: any
   @observable public chooseTask: string
   @observable public scrollHeight: number
   @observable public assignModal: boolean
   @observable public feedbackModal: boolean
   @observable public detailModal: boolean
+  @observable public addTaskModal: boolean
+  @observable public taskType: number = 0
 
   constructor (props: any) {
     super(props)
@@ -95,6 +100,10 @@ class Advance extends React.Component<{}, {}> {
     this.detailRef = ref
   }
 
+  public onAddTaskRef = (ref: React.Component) => {
+    this.addTaskRef = ref
+  }
+
   public feedback = (data: any) => {
     this.feedbackRef.init(data)
     this.feedbackModal = true
@@ -111,6 +120,10 @@ class Advance extends React.Component<{}, {}> {
 
   public closeDetail = () => {
     this.detailModal = false
+  }
+
+  public closeAddTask = () => {
+    this.addTaskModal = false
   }
 
   public finish = (data: any) => {
@@ -157,6 +170,15 @@ class Advance extends React.Component<{}, {}> {
         )
       },
       {
+        width: 150,
+        title: '发起时间',
+        dataIndex: 'create_time',
+        key: 'create_time',
+        render: (data: any) => (
+          <div>{Util.momentDate(data)}</div>
+        )
+      },
+      {
         width: 100,
         title: '状态',
         dataIndex: 'status',
@@ -166,7 +188,7 @@ class Advance extends React.Component<{}, {}> {
         )
       },
       {
-        width: 200,
+        width: 250,
         title: '操作',
         key: 'op',
         render: (data: any) => {
@@ -177,6 +199,7 @@ class Advance extends React.Component<{}, {}> {
                 <div className="op-box">
                   <Button onClick={this.receive.bind(this, data)} className="receive">接受</Button>
                   <Button onClick={this.assign.bind(this, data)} className="assign">派发</Button>
+                  <Button onClick={this.goDetail.bind(this, data)} className="receive">详情</Button>
                 </div>
               )
             case 10:
@@ -185,41 +208,52 @@ class Advance extends React.Component<{}, {}> {
                 <div className="op-box">
                   <Button onClick={this.feedback.bind(this, data)} className="feed">反馈</Button>
                   <Button onClick={this.finish.bind(this, data)} className="finish">完成</Button>
+                  <Button onClick={this.goDetail.bind(this, data)} className="receive">详情</Button>
                 </div>
               )
             case 30:
               return (
                 <div className="op-box">
                   <Button disabled className="assign">已派发</Button>
+                  <Button onClick={this.goDetail.bind(this, data)} className="receive">详情</Button>
                 </div>
               )
             case 20:
               return (
                 <div className="op-box">
-                  <Button disabled className="finish">已完成</Button>
+                  <Button onClick={this.goDetail.bind(this, data)} className="receive">详情</Button>
                 </div>
               )
           }
         }
       }
     ]
-    const res: any = await this.msgService.getTaskTree()
+    this.initTaskList()
+  }
+  
+  public async initTaskList (isAddTask: boolean = false) {
+    const res: any = await this.msgService.getTaskTree({
+      sys_type: Bean.TASK_TYPE_MAP[this.taskType]
+    })
     if (res.status === 0) {
       this.taskList = res.data
       this.taskList.forEach((item: any) => {
         this.expandList = [...this.expandList, `${item.id}`]
       })
-      const task: any = await new Promise((resolve: any) => {
-        this.taskList.filter((item: any): boolean | void => {
-          if (item.children && item.children.length > 0) {
-            if (item.children[0]) {
-              resolve(item.children[0])
-              return true
+      if (!isAddTask) {
+        const task: any = await new Promise((resolve: any) => {
+          this.taskList.filter((item: any): boolean | void => {
+            if (item.children && item.children.length > 0) {
+              if (item.children[0]) {
+                resolve(item.children[0])
+                return true
+              }
             }
-          }
+          })
         })
-      })
-      this.chooseTask = task.id
+        this.chooseTask = task.id
+      }
+      
       this.searchList(this.chooseTask)
     }
   }
@@ -231,9 +265,38 @@ class Advance extends React.Component<{}, {}> {
     }
   }
 
+  public changeTaskType (taskType: number) {
+    if (this.taskType === taskType) {
+      return
+    }
+    this.taskType = taskType
+    this.taskList = []
+    this.msgList = []
+    this.initTaskList()
+  }
+
+  public changeTaskPanel = (e: string[]) => {
+    this.expandList = e
+  }
+  
+  public addTask = () => {
+    this.addTaskRef.initUsers()
+    this.addTaskModal = true
+
+  }
+
+  public BreadcrumbItemText = (typeIndex: number): React.ReactNode => {
+    return <span onClick={this.changeTaskType.bind(this, typeIndex)} className={this.taskType === typeIndex ? 'active' : ''}>{Bean.TASK_TYPE_MAP[typeIndex]}</span>
+  }
+
   public render () {
     return (
       <div className="advance-main">
+        <AddTask
+          onRef={this.onAddTaskRef}
+          visible={this.addTaskModal}
+          close={this.closeAddTask}
+          refresh={this.initTaskList.bind(this, true)}/>
         <Assign
           onRef={this.onAssignRef}
           visible={this.assignModal}
@@ -248,48 +311,83 @@ class Advance extends React.Component<{}, {}> {
           visible={this.detailModal}
           close={this.closeDetail}
           onRef={this.onDetailRef}/>
-        <div className="advance-con">
-          <div className="con-left">
-            <Collapse
-              activeKey={this.expandList}
-              onChange={(e: string[]) => this.expandList = e}>
-              {
-                this.taskList.map((item: any) => {
-                  return (
-                    <Collapse.Panel header={`${item.name}(${item.count})`}  key={`${item.id}`}>
-                      <ul>
-                        {
-                          (item.children && item.children.length > 0) ? (
-                            item.children.map((n: any) => {
-                              return (
-                                <li className={`${(this.chooseTask === n.id) ? ('selected') : ('')}`} onClick={this.chooseMsg.bind(this, n)} key={n.id}>{`${n.name}(${n.count})`}</li>
-                              )
-                            })
-                          ) : ('')
-                        }
-                      </ul>
-                    </Collapse.Panel>
-                  )
-                })
-              }
-            </Collapse>
-          </div>
-          <div ref={this.tableBox} className="con-right">
-            <Table
-              rowKey="id"
-              bordered
-              size="small"
-              scroll={{
-                x: false,
-                y: this.scrollHeight
-              }}
-              pagination={{
-                ...this.pagination,
-                current: this.page,
-                total: this.total
-              }}
-              columns={this.tableConfig}
-              dataSource={this.msgList} />
+        <div className="advance-tabs">
+          <Breadcrumb className="task-type">
+            <Breadcrumb.Item>
+              {this.BreadcrumbItemText(0)}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>  
+              {this.BreadcrumbItemText(1)}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.BreadcrumbItemText(2)}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="advance-con-wrapper">
+            {
+              this.taskType === 1 && 
+              <Button className="add-task" icon="plus" onClick={this.addTask} type="primary">
+                新建任务
+              </Button>
+            }
+            <div className="advance-con">
+              <div className="con-left">
+                {
+                  this.taskType === 0 ? 
+                  <Collapse
+                    activeKey={this.expandList}
+                    onChange={this.changeTaskPanel}>
+                    {
+                      this.taskList.map((item: any) => {
+                        return (
+                          <Collapse.Panel header={`${item.name}(${item.count})`}  key={`${item.id}`}>
+                            <ul>
+                              {
+                                (item.children && item.children.length > 0) ? (
+                                  item.children.map((n: any) => {
+                                    return (
+                                      <li className={`${(this.chooseTask === n.id) ? ('selected') : ('')}`} onClick={this.chooseMsg.bind(this, n)} key={n.id}>{`${n.name}(${n.count})`}</li>
+                                    )
+                                  })
+                                ) : ('')
+                              }
+                            </ul>
+                          </Collapse.Panel>
+                        )
+                      })
+                    }
+                  </Collapse> 
+                  : 
+                  <ul>
+                  {
+                    this.taskList.length && this.taskList[0].children.map((item: any) => {
+                      return (
+                        <li className={`${(this.chooseTask === item.id) ? ('selected') : ('')}`} onClick={this.chooseMsg.bind(this, item)} key={item.id}>{`${item.name}(${item.count})`}</li>
+                      )
+                    })
+                  }
+                  </ul>
+                }
+
+                </div>
+              <div ref={this.tableBox} className="con-right">
+              <Table
+                rowKey="id"
+                bordered
+                size="small"
+                scroll={{
+                  x: false,
+                  y: this.scrollHeight
+                }}
+                pagination={{
+                  ...this.pagination,
+                  current: this.page,
+                  total: this.total
+                }}
+                columns={this.tableConfig}
+                dataSource={this.msgList} />
+            </div>
+            </div>
           </div>
         </div>
       </div>

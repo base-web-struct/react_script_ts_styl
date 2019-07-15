@@ -5,13 +5,15 @@ import { observer, inject } from 'mobx-react'
 import { UserService } from 'src/services/user'
 import { GroupService } from 'src/services/group'
 import { CoopService } from 'src/services/coop'
-import Bean from 'src/beans'
+import { RoleService } from 'src/services/role'
+import Util from 'src/utils';
 
 export interface AddCoopProps {
   visible: boolean
   close: () => void
   onRef: (ref: React.Component) => void
   refersh: () => void
+  isDetail: boolean
 }
 
 interface CoopDataProp {
@@ -22,26 +24,49 @@ interface CoopDataProp {
   sponsor_dep_code: string,
   remarks: string,
   coop_dep: string,
-  id: string
+  id: string,
+  feedback_list: any[]
 }
 
-@inject('userService', 'groupService', 'coopService')
+class ModalProps {
+  public className: string = 'add-coop-modal'
+  public title: string = '情报协作表单'
+  public centered: boolean = true
+  public cancelText: string = '取消'
+  public okText: string = '确定'
+  public visible: boolean = false
+  public onOk: any
+  public onCancel: any
+
+  constructor (onOk: any, onCancel: any) {
+    this.onOk = onOk
+    this.onCancel = onCancel
+  }
+}
+
+@inject('userService', 'groupService', 'coopService', 'roleService')
 @observer
 class AddCoop extends React.Component<AddCoopProps, {}> {
 
   @observable public coopData: CoopDataProp
   @observable public feedText: string
+  public modalPrps: any 
+  public deptList: any[] = []
 
   public userService: UserService
   public groupService: GroupService
   public coopService: CoopService
+  public roleService: RoleService
 
   constructor (props: any) {
     super(props)
     this.userService = props.userService
     this.groupService = props.groupService
     this.coopService = props.coopService
+    this.roleService = props.roleService
     this.refresh()
+    this.getDeptList()
+    this.modalPrps = new ModalProps(this.ok, this.cancel)
   }
 
   public init = () => {
@@ -59,7 +84,8 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
       sponsor_dep: '',
       sponsor_dep_code: '',
       remarks: '',
-      coop_dep: ''
+      coop_dep: '',
+      feedback_list: []
     }
   }
 
@@ -73,8 +99,16 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
         name: res.data.name,
         remarks: res.data.remarks,
         coop_dep: res.data.coop_dep,
-        id
+        id,
+        feedback_list: res.data.feedback_list
       }
+    }
+  }
+
+  public async getDeptList () {
+    const res: any = await this.roleService.getDeptList()
+    if (res.status === 0) {
+      this.deptList = res.data
     }
   }
 
@@ -143,20 +177,35 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
     this.props.close()
   }
 
-  public render () {
-    const { visible } = this.props
+  public FeedBackList = (coopData: CoopDataProp): React.ReactNode => {
+   
+    if (this.props.isDetail) {
+      return coopData.feedback_list.length ? coopData.feedback_list.map((item: any, index: number) => (
+        <li key={index}>
+          <i></i>
+          <span className="time">{Util.momentDate(item.create_time)}</span>
+          <span>{item.content}</span>
+        </li>
+      )) : <li className="no-info">无</li>
+    } else {
+      return ''
+    }
+  }
 
+  public componentWillReceiveProps (nextProps: any) {
+    this.modalPrps.visible = nextProps.visible
+    if (nextProps.isDetail) {
+      this.modalPrps = {...this.modalPrps, footer: null}
+    } else {
+      delete this.modalPrps.footer
+    }
+  }
+
+  public render () {
+    const { isDetail } = this.props
     return (
-      <Modal
-        className="add-coop-modal"
-        title="情报协作表单"
-        centered
-        maskClosable={false}
-        cancelText={'取消'}
-        okText={'确定'}
-        visible={visible}
-        onOk={this.ok}
-        onCancel={this.cancel}
+      <Modal 
+      {...this.modalPrps}
       >
         <div className="form-input">
           <label>事项名称</label>
@@ -173,8 +222,8 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
             value={this.coopData.coop_dep}
             onChange={(value: any) => { this.coopData.coop_dep = value }} >
             {
-              Bean.DEP_SEL_LIST.map((item: any, index: number) => (
-                <Select.Option key={index} value={item.value} >{item.name}</Select.Option>
+              this.deptList.map((item: any, index: number) => (
+                <Select.Option key={index} value={item} >{item}</Select.Option>
               ))
             }
           </Select>
@@ -208,7 +257,7 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
           </div>
         </div>
         {
-          (this.coopData.id) ? (
+          this.coopData.id && !isDetail ? 
             <div className="form-input area">
               <label>反馈</label>
               <Input.TextArea
@@ -216,7 +265,13 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
                 value={this.feedText}
                 onChange={e => { this.feedText = e.target.value }} />
             </div>
-          ) : ('')
+           : <div className="feedback-list">
+              <div className="label">反馈列表</div>
+              <ul>
+                {this.FeedBackList(this.coopData)}
+              </ul>
+              
+            </div>
         }
       </Modal>
     )

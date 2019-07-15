@@ -4,114 +4,159 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  .advance-con
+  
+  .advance-tabs
     width: 100%;
     max-width: 1400px;
-    height calc(100% - 30px);
-    background-color: rgba(4, 50, 100, .51);
-    border: 1px solid rgba(11, 141, 246, .3);
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
+    height 100%;
 
-    .con-left
-      width: 200px;
-      height 100%;
-      
-      .ant-collapse
-        width: 100%;
-        height 100%;
-        background-color: transparent;
-        border: 0;
+    .task-type 
+      margin: 5px 0;
+      padding-left: 5px;
 
-        .ant-collapse-item
-          border: 0;
-          margin-bottom: 20px;
+      .ant-breadcrumb-link
+
+        & > span
+          color:rgba(255, 255, 255, .8);
+          font-size: 16px;
+          cursor: pointer;
+
+          &:hover
+            color:#62aeff;
           
-          .ant-collapse-header
+          &.active
+            color:#62aeff;
+
+    .advance-con-wrapper
+      width: 100%;  
+      height calc(100% - 30px);
+      background-color: rgba(4, 50, 100, .51);
+      border: 1px solid rgba(11, 141, 246, .3);
+      
+      .add-task
+        margin: 10px 0 0 15px;
+
+      .advance-con
+        width: 100%;  
+        height calc(100% - 30px);
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+
+        .con-left
+          width: 200px;
+          height 100%;
+
+          & > ul
             width: 100%;
-            height 40px;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            color: rgba(255, 255, 255, .8);
-            background: -webkit-linear-gradient(left, rgba(46, 163, 243, 1), rgba(46, 163, 243, .1));
+            & > li
+              width: 100%;
+              height 40px;
+              background-color: rgba(41, 121, 255, .3);
+              color: rgba(255, 255, 255, .8);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-bottom: 1px solid rgba(4, 50, 100, .51);
+              cursor: pointer;
 
-            .ant-collapse-arrow
-              position: static;
-              transform: translateY(0);
-              margin-right: 5px;
-
-          .ant-collapse-content
+              &.selected,
+              &:hover
+                background-color: rgba(41, 157, 242, .6);
+          
+          .ant-collapse
+            width: 100%;
+            height 100%;
+            background-color: transparent;
             border: 0;
-            background-color: transparent;
 
-            .ant-collapse-content-box
-              padding: 0;
-              & > ul
+            .ant-collapse-item
+              border: 0;
+              margin-bottom: 20px;
+              
+              .ant-collapse-header
                 width: 100%;
-                & > li
-                  width: 100%;
-                  height 40px;
-                  background-color: rgba(41, 121, 255, .3);
+                height 40px;
+                display: flex;
+                align-items: center;
+                padding: 0 16px;
+                color: rgba(255, 255, 255, .8);
+                background: -webkit-linear-gradient(left, rgba(46, 163, 243, 1), rgba(46, 163, 243, .1));
+
+                .ant-collapse-arrow
+                  position: static;
+                  transform: translateY(0);
+                  margin-right: 5px;
+
+              .ant-collapse-content
+                border: 0;
+                background-color: transparent;
+
+                .ant-collapse-content-box
+                  padding: 0;
+
+                  & > ul
+                    width: 100%;
+                    & > li
+                      width: 100%;
+                      height 40px;
+                      background-color: rgba(41, 121, 255, .3);
+                      color: rgba(255, 255, 255, .8);
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      border-bottom: 1px solid rgba(4, 50, 100, .51);
+                      cursor: pointer;
+
+                      &.selected,
+                      &:hover
+                        background-color: rgba(41, 157, 242, .6);
+          
+        .con-right
+          width: calc(100% - 220px);
+          height 100%;
+          padding: 0 15px;
+
+          .ant-table
+            .op-box
+              display: flex;
+              .ant-btn[disabled]
+                &.feed
+                  background-color: rgba(255, 107, 39, .4);
+                  border: 1px solid rgba(255, 107, 39, .4);
                   color: rgba(255, 255, 255, .8);
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  border-bottom: 1px solid rgba(4, 50, 100, .51);
-                  cursor: pointer;
+                &.finish
+                  background-color: rgba(41, 157, 242, .4);
+                  border: 1px solid rgba(41, 157, 242, .4);
+                  color: rgba(255, 255, 255, .8);
 
-                  &.selected,
-                  &:hover
-                    background-color: rgba(41, 157, 242, .6);
+                &.assign
+                  background-color: rgba(125, 173, 240, .4);
+                  border: 1px solid rgba(125, 173, 240, .4);
+                  color: rgba(255, 255, 255, .8);
+              .ant-btn
+                width: 60px;
+                height 24px;
+                margin-right: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+                font-szie: 12px;
+                background-color: transparent;
 
-        
-    .con-right
-      width: calc(100% - 220px);
-      height 100%;
-      padding: 0 15px;
-
-      .ant-table
-        .op-box
-          display: flex;
-          .ant-btn[disabled]
-            &.feed
-              background-color: rgba(255, 107, 39, .4);
-              border: 1px solid rgba(255, 107, 39, .4);
-              color: rgba(255, 255, 255, .8);
-            &.finish
-              background-color: rgba(41, 157, 242, .4);
-              border: 1px solid rgba(41, 157, 242, .4);
-              color: rgba(255, 255, 255, .8);
-
-            &.assign
-              background-color: rgba(125, 173, 240, .4);
-              border: 1px solid rgba(125, 173, 240, .4);
-              color: rgba(255, 255, 255, .8);
-          .ant-btn
-            width: 60px;
-            height 24px;
-            margin-right: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            font-szie: 12px;
-            background-color: transparent;
-
-            &.receive
-              border: 1px solid rgba(255, 255, 255, .8);
-              color: rgba(255, 255, 255, .8);
-            &.feed
-              border: 1px solid rgb(255, 107, 39);
-              color: rgb(255, 107, 39);
-            &.finish
-              border: 1px solid rgb(103, 185, 245);
-              color: rgb(103, 185, 245);
-            &.assign
-              border: 1px solid rgb(125, 173, 240);
-              color: rgb(125, 173, 240);
+                &.receive
+                  border: 1px solid rgba(255, 255, 255, .8);
+                  color: rgba(255, 255, 255, .8);
+                &.feed
+                  border: 1px solid rgb(255, 107, 39);
+                  color: rgb(255, 107, 39);
+                &.finish
+                  border: 1px solid rgb(103, 185, 245);
+                  color: rgb(103, 185, 245);
+                &.assign
+                  border: 1px solid rgb(125, 173, 240);
+                  color: rgb(125, 173, 240);
         
 
 .assign-main
@@ -120,6 +165,16 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 5px;
+
+    .search-input
+      position relative
+      flex 1
+
+      .search-icon
+        position: absolute
+        left:0;
+        top:12px;
+        color: rgba(255, 255, 255, .8);
 
     &.area
       display: block;
@@ -140,7 +195,7 @@
         padding: 4px 11px;
 
     & > label 
-      width 40px;
+      width 60px;
       font-size: 12px;
       color: rgba(255, 255, 255, .8);
 
@@ -150,7 +205,7 @@
 
     & > i
       color: rgba(255, 255, 255, .8);
-      transform: translate(18px, -2px);
+      // transform: translate(18px, -2px);
 
   .res-list
     width: 100%;
@@ -211,6 +266,7 @@
 
     & > label
       width: 50px;
+      text-align: right;
 
     & > .item-con
       width: calc(100% - 60px);
@@ -268,7 +324,8 @@
             line-height: 30px;
             &:nth-child(2n+1)
               background-color: rgba(41, 157, 242, .2);
-
+            &.no-info 
+              text-align: center;
             & > i 
               display: inline-block;
               width: 6px;
