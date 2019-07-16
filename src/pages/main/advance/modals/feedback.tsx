@@ -6,7 +6,7 @@ import { UserService } from 'src/services/user'
 import { GroupService } from 'src/services/group'
 import { MsgService } from 'src/services/msg'
 
-interface AddCoopProps {
+interface FeedBackProps {
   visible: boolean
   close: () => void
   onRef: (ref: React.Component) => void
@@ -22,7 +22,7 @@ interface UserData {
 
 @inject('userService', 'groupService', 'msgService')
 @observer
-class FeedBack extends React.Component<AddCoopProps, {}> {
+class FeedBack extends React.Component<FeedBackProps, {}> {
 
   public msgId: string = ''
   public msgName: string = ''
@@ -87,6 +87,7 @@ class FeedBack extends React.Component<AddCoopProps, {}> {
     if (res.status === 0) {
       message.success('反馈成功')
       this.props.refresh()
+      this.feedText = ''
       this.props.close()
     } else {
       message.error(res.msg || '反馈失败')
@@ -105,7 +106,6 @@ class FeedBack extends React.Component<AddCoopProps, {}> {
         className="add-coop-modal"
         title="反馈"
         centered
-        maskClosable={false}
         cancelText={'取消'}
         okText={'确定'}
         visible={visible}

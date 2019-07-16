@@ -28,6 +28,7 @@ class Cooperate extends React.Component<{}, {}> {
   @observable public scrollHeight: number
   @observable public pagination: any
   @observable public addCoopModal: boolean
+  @observable public isDetail: boolean = false
 
   constructor (props: any) {
     super(props)
@@ -54,6 +55,7 @@ class Cooperate extends React.Component<{}, {}> {
 
   public openAddCoop = () => {
     this.addCoopRef.init()
+    this.isDetail = false
     this.addCoopModal = true
   }
 
@@ -98,7 +100,15 @@ class Cooperate extends React.Component<{}, {}> {
     await this.addCoopRef.feed(data.id)
     this.addCoopModal = true
   }
+  public showFeed = (data: any) => {
+    this.isDetail = false
+    this.feed(data)
+  }
 
+  public showDetail = (data: any) => {
+    this.isDetail = true
+    this.feed(data)
+  }
   public finish = (data: any) => {
     Modal.confirm({
       title: '提示',
@@ -155,7 +165,7 @@ class Cooperate extends React.Component<{}, {}> {
         )
       },
       {
-        width: 120,
+        width: 160,
         title: '操作',
         key: 'op',
         render: (data: any, index: number) => {
@@ -164,23 +174,18 @@ class Cooperate extends React.Component<{}, {}> {
           return (
             <div className="op-box">
               {
-                (data.status === 0) ? (
+                (data.status === 0 && !data.is_owner) ? (
                   <Button className="receive" onClick={this.recive.bind(this, data)}>接收</Button>
                 ) : ('')
               }
               {
-                (data.status === 1 && !data.is_owner) ? (
-                  <Button className="feed" onClick={this.feed.bind(this, data)}>反馈</Button>
+                ((data.status === 2 || data.status === 1) && !data.is_owner) ? (
+                  <Button className="feed" onClick={this.showFeed.bind(this, data)}>反馈</Button>
                 ) : ('')
               }
               {
-                (data.status === 1 && data.is_owner) ? (
+                ((data.status === 2 || data.status === 0 || data.status === 1) && data.is_owner) ? (
                   <Button className="finish" onClick={this.finish.bind(this, data)}>完成</Button>
-                ) : ('')
-              }
-              {
-                (data.status === 2) ? (
-                  <Button className="feed" onClick={this.feed.bind(this, data)} type="primary">已反馈</Button>
                 ) : ('')
               }
               {
@@ -188,6 +193,7 @@ class Cooperate extends React.Component<{}, {}> {
                   <Button disabled className="finish" type="primary">已完成</Button>
                 ) : ('')
               }
+               <Button className="receive" onClick={this.showDetail.bind(this, data)}>详情</Button>
             </div>
           )
         }
@@ -204,6 +210,7 @@ class Cooperate extends React.Component<{}, {}> {
     return (
       <div className="cooperate-main">
         <AddCoop
+          isDetail={this.isDetail}
           onRef={this.onRef}
           visible={this.addCoopModal}
           refersh={this.searchData}
