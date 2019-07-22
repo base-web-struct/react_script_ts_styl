@@ -33,6 +33,6 @@ export default class Bean {
     2: '系统对接任务',
   }
 
-  // public static FH_MAP_URL = 'http://60.32.1.3/hero/community/index.html?policeNo=032604'
-  public static FH_MAP_URL = 'http://10.73.129.213:8888/hero/community/index.html?policeNo=032604'
+  public static FH_MAP_URL = 'http://60.32.1.3/hero/community/index.html?policeNo=032604'
+  // public static FH_MAP_URL = 'http://10.73.129.213:8888/hero/community/index.html?policeNo=032604'
 }

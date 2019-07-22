@@ -349,7 +349,7 @@ class Advance extends React.Component<{}, {}> {
                                       <li className={`${(this.chooseTask === n.id) ? ('selected') : ('')}`} onClick={this.chooseMsg.bind(this, n)} key={n.id}>{`${n.name}(${n.count})`}</li>
                                     )
                                   })
-                                ) : ('')
+                                ) : null
                               }
                             </ul>
                           </Collapse.Panel>
@@ -360,11 +360,11 @@ class Advance extends React.Component<{}, {}> {
                   : 
                   <ul>
                   {
-                    this.taskList.length && this.taskList[0].children.map((item: any) => {
+                    this.taskList.length ? this.taskList[0].children.map((item: any) => {
                       return (
                         <li className={`${(this.chooseTask === item.id) ? ('selected') : ('')}`} onClick={this.chooseMsg.bind(this, item)} key={item.id}>{`${item.name}(${item.count})`}</li>
                       )
-                    })
+                    }) : ''
                   }
                   </ul>
                 }
