@@ -260,6 +260,7 @@ class Advance extends React.Component<{}, {}> {
 
   public chooseMsg = async (item: any) => {
     if (this.chooseTask !== item.id) {
+      this.page = 1
       this.chooseTask = item.id
       this.searchList(this.chooseTask)
     }
