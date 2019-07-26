@@ -10,28 +10,34 @@ import {
 } from 'antd'
 import { RouteComponentProps } from 'react-router'
 import { UserService } from 'src/services/user'
+import { GlobalService } from 'src/services/global'
 import { UserStore } from 'src/stores/modules/user'
 import { MenuStore } from 'src/stores/modules/menu'
 
 export interface LoginProps extends RouteComponentProps<{}> {
   form: any,
   userService: UserService,
+  globalService: GlobalService,
   userStore: UserStore
 }
 
-@inject('userService', 'userStore', 'menuStore')
+@inject('userService', 'userStore', 'menuStore', 'globalService')
 @observer
 class Login extends React.Component<LoginProps, {}> {
 
   public userService: UserService
+  public globalService: GlobalService
   public userStore: UserStore
   public menuStore: MenuStore
+  public title: string = ''
 
   constructor (props: any) {
     super(props)
     this.userService = props.userService
+    this.globalService = props.globalService
     this.userStore = props.userStore
     this.menuStore = props.menuStore
+    this.getTitle()
   }
 
   public login = async (e: any): Promise<any> => {
@@ -55,7 +61,15 @@ class Login extends React.Component<LoginProps, {}> {
       }
     })
   }
-
+  public getTitle = async () => {
+    const res = await this.globalService.getTitle({})
+    if (res.status === 0) {
+      this.title = res.data
+      window.document.title = res.data
+    } else {
+      message.error(res.msg || '查询失败')
+    }
+  }
   public requestFullscreen = () => {
     const el: any = document.documentElement
     const rfs = el.requestFullScreen || el.webkitRequestFullScreen ||
@@ -70,7 +84,7 @@ class Login extends React.Component<LoginProps, {}> {
         <div className="login-form">
           <div className="login-logo">
             <i></i>
-            <span>武汉市公安局数字派出所</span>
+            <span>{this.title}</span>
           </div>
           <Form className="form-con" onSubmit={this.login}>
             <Form.Item>
