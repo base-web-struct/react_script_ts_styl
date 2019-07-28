@@ -34,5 +34,6 @@ export default class Bean {
   }
 
   // public static FH_MAP_URL = 'http://60.32.1.3/hero/community/index.html?policeNo=032604'
-  public static FH_MAP_URL = 'http://10.73.129.213:8888/hero/community/index.html?policeNo=032604'
+  public static FH_MAP_URL = 'http://60.32.1.3/hero/community/index.html?policeNo=024448'
+  // public static FH_MAP_URL = 'http://10.73.129.213:8888/hero/community/index.html?policeNo=032604'
 }
