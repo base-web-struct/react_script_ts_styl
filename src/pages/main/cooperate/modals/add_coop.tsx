@@ -22,6 +22,7 @@ interface CoopDataProp {
   sponsor_police_id: string,
   sponsor_dep: string,
   sponsor_dep_code: string,
+  reason: string,
   remarks: string,
   coop_dep: string,
   id: string,
@@ -30,7 +31,7 @@ interface CoopDataProp {
 
 class ModalProps {
   public className: string = 'add-coop-modal'
-  public title: string = '情报协作表单'
+  public title: string = '数据协作表单'
   public centered: boolean = true
   public cancelText: string = '取消'
   public okText: string = '确定'
@@ -83,6 +84,7 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
       sponsor_police_id: '',
       sponsor_dep: '',
       sponsor_dep_code: '',
+      reason: '',
       remarks: '',
       coop_dep: '',
       feedback_list: []
@@ -97,6 +99,7 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
       this.coopData = {
         ...this.coopData,
         name: res.data.name,
+        reason: res.data.reason,
         remarks: res.data.remarks,
         coop_dep: res.data.coop_dep,
         id,
@@ -227,6 +230,14 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
               ))
             }
           </Select>
+        </div>
+        <div className="form-input area">
+          <label>协作请求原因</label>
+          <Input.TextArea
+            disabled={!!this.coopData.id}
+            placeholder="请填写协作请求原因…"
+            value={this.coopData.reason}
+            onChange={e => { this.coopData.reason = e.target.value }} />
         </div>
         <div className="form-input area">
           <label>协作请求描述</label>
