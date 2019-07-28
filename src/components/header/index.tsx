@@ -37,7 +37,7 @@ export default class HeaderNav extends React.Component<HeaderProps, {}> {
 
   public componentDidMount () {
     const update = () => {
-      this.timeStamp.current.innerHTML = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+      this.timeStamp.current.innerHTML = moment().format('YYYY-MM-DD HH:mm:ss')
     }
     update()
     this.timer = setInterval(update, 1000)
