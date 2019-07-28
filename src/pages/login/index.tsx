@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { observer, inject } from 'mobx-react'
+import { observable } from 'mobx'
 import { 
   Form,
   Icon,
@@ -29,7 +30,7 @@ class Login extends React.Component<LoginProps, {}> {
   public globalService: GlobalService
   public userStore: UserStore
   public menuStore: MenuStore
-  public title: string = ''
+  @observable public title: string = ''
 
   constructor (props: any) {
     super(props)
