@@ -98,12 +98,7 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
     if (res.status === 0) {
       this.coopData = {
         ...this.coopData,
-        name: res.data.name,
-        reason: res.data.reason,
-        remarks: res.data.remarks,
-        coop_dep: res.data.coop_dep,
-        id,
-        feedback_list: res.data.feedback_list
+        ...res.data
       }
     }
   }
