@@ -13,18 +13,16 @@ import Advance from './advance'
 import HeaderNav from 'src/components/header'
 
 import { UserService } from 'src/services/user'
-import { HomeStore } from 'src/stores/modules/home'
 import { MenuService } from 'src/services/menu'
 import { MenuStore } from 'src/stores/modules/menu'
 import { UserStore } from 'src/stores/modules/user'
 import Cookie from 'js-cookie';
 
-@inject('userService', 'menuService', 'homeStore', 'menuStore', 'userStore')
+@inject('userService', 'menuService',  'menuStore', 'userStore')
 @observer
 class Main extends React.Component<RouteComponentProps<{}>, {}> {
 
   public userService: UserService
-  public homeStore: HomeStore
   public menuService: MenuService
   public menuStore: MenuStore
   public userStore: UserStore
@@ -46,7 +44,6 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
 
   public initConfig (props: any): void {
     this.userService = props.userService
-    this.homeStore = props.homeStore
     this.menuService = props.menuService
     this.menuStore = props.menuStore
     this.userStore = props.userStore

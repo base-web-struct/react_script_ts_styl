@@ -93,7 +93,15 @@
         "variable-declaration": "nospace"
       }
     ],
-    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
+    "variable-name": {
+      "options": [
+        "ban-keywords",
+        "allow-pascal-case",
+        "allow-leading-underscore",
+        "allow-trailing-underscore",
+        "allow-snake-case"
+      ]
+    },
     "whitespace": [
       true,
       "check-branch",
