@@ -34,7 +34,6 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
-    "@material-ui/core": "^4.1.2",
     "@types/jest": "^24.0.15",
     "@types/js-cookie": "^2.2.2",
     "@types/lodash": "^4.14.135",

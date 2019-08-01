@@ -83,7 +83,7 @@ export default class Home extends React.Component<RouteComponentProps, {}> {
   }
 
   public computedIframeSrc () {
-    if (this.isFullScreen) { 
+    if (this.isFullScreen) {
       return this.mapUrl
       // return Bean.FH_MAP_URL
     } else {

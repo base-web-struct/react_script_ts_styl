@@ -58,15 +58,19 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
 
   public getMenuList = async () => {
     const item: any = this.menuStore.getMenu()
+    console.log(item)
     if (item) {
       this.selectItem = [item.id]
       this.selectExpand = item.parent_id
     }
+
     const list: any = await this.menuStore.getMenuList()
+    console.log(list)
     if (list && list.length > 0) {
       this.menuList = list
       return
     }
+
     const res = await this.menuService.getMenuList()
     if (res.status === 0) {
       Util.setMenu(res.data)
@@ -78,7 +82,6 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
         this.selectExpand = select.parent_id
         Cookies.set('first_menu_cache', JSON.stringify(select))
         const href: string = await this.menuCache(select)
-
         if (!location.search && href) {
           this.props.history.push(href)
         }
@@ -86,7 +89,6 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     } else {
       message.error(res.msg || '获取菜单失败')
     }
-    
   }
 
   public menuCache = async (item: any): Promise<string> => {
@@ -105,11 +107,9 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     switch (item.type) {
       case 'dynamic':
         return `/main/home?id=${item.id}&&href=${encodeURIComponent(item.href)}`
-        break
       case 'static':
       default:
         return `${href}?id=${item.id}`
-        break
     }
   }
 
@@ -172,7 +172,6 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
               }
               onTitleClick={this.expandItem.bind(this, item)}>
                 {this.MenuItem(item.children)}
-                
             </Menu.SubMenu>
           )
         } else {
@@ -199,6 +198,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
   }
 
   public componentWillReceiveProps (nextPrpos: any) {
+    console.log('receive props')
     if (nextPrpos.location.search !== this.props.location.search) {
       const search = nextPrpos.location.search
       const map: any = Util.getHrefMap(search)
@@ -211,7 +211,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
   }
 
   public componentDidMount () {
-    // his.fullScreenBtn.current.click()
+    // this.fullScreenBtn.current.click()
   }
 
   get getDepartment (): string {
@@ -230,45 +230,50 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
     }
     return (
       <div className="main">
-        <HeaderNav userProfile={this.userProfile} goHome={this.goHome} toggle={this.toggleMenu} sigout={this.sigout} isHideGoHome={isHideGoHome}/>
-        <div className="main-body">
-          <div className="menu-slide" onMouseEnter={this.showMenu}></div>
-          <div onMouseLeave={this.hideMenu} className={`left-menu ${this.collapsed ? '' : 'unexpand' }`}>
-            <Menu
-              selectedKeys={this.selectItem}
-              openKeys={this.selectExpand}
-              mode="inline"
-              theme="dark">
-                {
-                  this.MenuItem(this.menuList)
-                }
-            </Menu>
+        <HeaderNav
+          userProfile={this.userProfile}
+          goHome={this.goHome}
+          toggle={this.toggleMenu}
+          sigout={this.sigout}
+          isHideGoHome={isHideGoHome}/>
+          <div className="main-body">
+            <div className="menu-slide" onMouseEnter={this.showMenu}></div>
+            <div onMouseLeave={this.hideMenu} className={`left-menu ${this.collapsed ? '' : 'unexpand' }`}>
+              <Menu
+                selectedKeys={this.selectItem}
+                openKeys={this.selectExpand}
+                mode="inline"
+                theme="dark">
+                  {
+                    this.MenuItem(this.menuList)
+                  }
+              </Menu>
+            </div>
+            <div className="right-body">
+              <TransitionGroup className="main-route">
+                <CSSTransition
+                  key={pathname.split('/')[2]}
+                  timeout={{ enter: 1000, exit: 0 }}
+                  classNames={'fade'}>
+                    <Switch location={location}>
+                      <Route
+                        path="/main/home"
+                        component={Home}
+                      />
+                      <Route
+                        path="/main/cooperate"
+                        component={Cooperate}
+                      />
+                      <Route
+                        path="/main/advance"
+                        component={Advance}
+                      />
+                      <Redirect to="/main/home" />
+                    </Switch>
+                </CSSTransition>
+              </TransitionGroup>
+            </div>
           </div>
-          <div className="right-body">
-            <TransitionGroup className="main-route">
-              <CSSTransition
-                key={pathname.split('/')[2]}
-                timeout={{ enter: 1000, exit: 0 }}
-                classNames={'fade'}>
-                  <Switch location={location}>
-                    <Route
-                      path="/main/home"
-                      component={Home}
-                    />
-                    <Route
-                      path="/main/cooperate"
-                      component={Cooperate}
-                    />
-                    <Route
-                      path="/main/advance"
-                      component={Advance}
-                    />
-                    <Redirect to="/main/home" />
-                  </Switch>
-              </CSSTransition>
-            </TransitionGroup>
-          </div>
-        </div>
       </div>
     )
   }
