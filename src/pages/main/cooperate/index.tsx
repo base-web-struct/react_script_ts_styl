@@ -218,7 +218,7 @@ class Cooperate extends React.Component<{}, {}> {
         <div className="cooperate-con">
           <div className="coo-header">
             <i></i>
-            <span>派出所民警</span>
+            <span>数据协作</span>
           </div>
           <div className="coo-body">
             <Button icon="plus" onClick={this.openAddCoop} type="primary">
