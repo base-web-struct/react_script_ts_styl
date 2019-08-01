@@ -3,6 +3,7 @@ import { observable } from 'mobx'
 import { inject, observer } from 'mobx-react';
 import { MenuStore } from 'src/stores/modules/menu'
 import { UserStore } from 'src/stores/modules/user'
+import { MapService } from 'src/services/map'
 import Util from 'src/utils'
 import Bean from 'src/beans'
 import { RouteComponentProps } from 'react-router';
@@ -13,13 +14,15 @@ import { RouteComponentProps } from 'react-router';
 //   menu: any
 // }
 
-@inject('menuStore', 'userStore')
+@inject('menuStore', 'userStore', 'mapService')
 @observer
 export default class Home extends React.Component<RouteComponentProps, {}> {  
 
   public menuStore: MenuStore
   public userStore: UserStore
+  public mapService: MapService
 
+  @observable public mapUrl: string
   @observable public url: string
   @observable public isFullScreen: boolean = false
 
@@ -27,6 +30,8 @@ export default class Home extends React.Component<RouteComponentProps, {}> {
     super(props)
     this.menuStore = props.menuStore
     this.userStore = props.userStore
+    this.mapService = props.mapService
+    this.getMapUrl()
   }
 
   public componentWillReceiveProps () {
@@ -78,13 +83,20 @@ export default class Home extends React.Component<RouteComponentProps, {}> {
   }
 
   public computedIframeSrc () {
-    if (this.isFullScreen) {
-      return Bean.FH_MAP_URL
+    if (this.isFullScreen) { 
+      return this.mapUrl
+      // return Bean.FH_MAP_URL
     } else {
       return (this.url.indexOf('http://') > -1) ? (this.url) : (`http://${this.url}`)
       // return 'http://localhost:9300'
     }
     
+  }
+  public async getMapUrl () {
+    const res: any = await this.mapService.getMapUrl()
+    if (res.status === 0) {
+      this.mapUrl = res.data
+    }
   }
 
   public render () {
