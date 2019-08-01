@@ -5,7 +5,7 @@ import { observable } from 'mobx'
 import { MsgService } from 'src/services/msg'
 import Bean from 'src/beans';
 import Util from 'src/utils';
-// import Resource from './resource'
+import Resource from './resource'
 
 interface DetailProps {
   visible: boolean
@@ -25,7 +25,7 @@ class Detail extends React.Component<DetailProps, {}> {
   @observable public schema: any[] = []
   @observable public baseData: any = {}
   @observable public resourceModal: boolean = false
-  @observable public feedback_file_list: any = {}
+  @observable public resourceRef: any
 
   constructor (props: any) {
     super(props)
@@ -65,14 +65,17 @@ class Detail extends React.Component<DetailProps, {}> {
     
   }
 
-  public showResource = (item: any) => {
+  public showResource = (file_list: any[]) => {
+    this.resourceRef.filterFileList(file_list)
     this.resourceModal = true
-    this.feedback_file_list = item
   }
 
   public closeResource = () => {
     this.resourceModal = false
-    this.feedback_file_list = []
+  }
+
+  public onResourceRef = (ref: React.Component) => {
+    this.resourceRef = ref
   }
 
   public render () {
@@ -81,7 +84,10 @@ class Detail extends React.Component<DetailProps, {}> {
 
     return (
       <div>    
-        {/* <Resource visible={this.resourceModal} close={this.closeResource} data={this.feedback_file_list}></Resource> */}
+        <Resource 
+          visible={this.resourceModal} 
+          close={this.closeResource}
+          onRef={this.onResourceRef} />
         <Modal
           className="msg-detail-modal"
           title="详情"
@@ -157,7 +163,10 @@ class Detail extends React.Component<DetailProps, {}> {
                         <span className="time">{Util.momentDate(item.create_time)}</span>
                         <span>{item.content}</span>
                         <span onClick={this.showResource.bind(this, item.feedback_file_list)}>
-                          <a href="#">查看资源</a>
+                          {
+                            item.feedback_file_list.length ? 
+                            <a href="#">查看资源</a> : ''
+                          }
                         </span>
                       </li>
                     )) : <li className="no-info">无</li>
