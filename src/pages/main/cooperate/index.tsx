@@ -100,6 +100,7 @@ class Cooperate extends React.Component<{}, {}> {
     await this.addCoopRef.feed(data.id)
     this.addCoopModal = true
   }
+
   public showFeed = (data: any) => {
     this.isDetail = false
     this.feed(data)
@@ -109,6 +110,7 @@ class Cooperate extends React.Component<{}, {}> {
     this.isDetail = true
     this.feed(data)
   }
+
   public finish = (data: any) => {
     Modal.confirm({
       title: '提示',
@@ -201,7 +203,7 @@ class Cooperate extends React.Component<{}, {}> {
     ]
     this.searchData()
   }
-
+  
   public onRef = (ref: React.Component) => {
     this.addCoopRef = ref
   }
@@ -215,34 +217,34 @@ class Cooperate extends React.Component<{}, {}> {
           visible={this.addCoopModal}
           refersh={this.searchData}
           close={this.closeAddCoop} />
-        <div className="cooperate-con">
-          <div className="coo-header">
-            <i></i>
-            <span>派出所民警</span>
-          </div>
-          <div className="coo-body">
-            <Button icon="plus" onClick={this.openAddCoop} type="primary">
-              发起协作
-            </Button>
-            <div ref={this.tableBox} className="table-con">
-              <Table
-                rowKey="id"
-                bordered
-                size="small"
-                scroll={{
-                  x: false,
-                  y: this.scrollHeight
-                }}
-                pagination={{
-                  ...this.pagination,
-                  current: this.page,
-                  total: this.total
-                }}
-                columns={this.tableConfig}
-                dataSource={this.tableData} />
+          <div className="cooperate-con">
+            <div className="coo-header">
+              <i></i>
+              <span>派出所民警</span>
+            </div>
+            <div className="coo-body">
+              <Button icon="plus" onClick={this.openAddCoop} type="primary">
+                发起协作
+              </Button>
+              <div ref={this.tableBox} className="table-con">
+                <Table
+                  rowKey="id"
+                  bordered
+                  size="small"
+                  scroll={{
+                    x: false,
+                    y: this.scrollHeight
+                  }}
+                  pagination={{
+                    ...this.pagination,
+                    current: this.page,
+                    total: this.total
+                  }}
+                  columns={this.tableConfig}
+                  dataSource={this.tableData} />
+              </div>
             </div>
           </div>
-        </div>
       </div>
     )
   }

@@ -202,9 +202,7 @@ class AddCoop extends React.Component<AddCoopProps, {}> {
   public render () {
     const { isDetail } = this.props
     return (
-      <Modal 
-      {...this.modalPrps}
-      >
+      <Modal {...this.modalPrps}>
         <div className="form-input">
           <label>事项名称</label>
           <Input

@@ -58,14 +58,12 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
 
   public getMenuList = async () => {
     const item: any = this.menuStore.getMenu()
-    console.log(item)
     if (item) {
       this.selectItem = [item.id]
       this.selectExpand = item.parent_id
     }
 
     const list: any = await this.menuStore.getMenuList()
-    console.log(list)
     if (list && list.length > 0) {
       this.menuList = list
       return
@@ -179,8 +177,7 @@ class Main extends React.Component<RouteComponentProps<{}>, {}> {
             <Menu.Item
               onClick={this.chooseMenu.bind(this, item)}
               key={item.id}
-              title={item.name}
-              >
+              title={item.name}>
               <span className="menu-name">{item.name}</span>
             </Menu.Item>
           )

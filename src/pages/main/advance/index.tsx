@@ -241,17 +241,8 @@ class Advance extends React.Component<{}, {}> {
         this.expandList = [...this.expandList, `${item.id}`]
       })
       if (!isAddTask) {
-        const task: any = await new Promise((resolve: any) => {
-          this.taskList.filter((item: any): boolean | void => {
-            if (item.children && item.children.length > 0) {
-              if (item.children[0]) {
-                resolve(item.children[0])
-                return true
-              }
-            }
-          })
-        })
-        this.chooseTask = task.id
+        const task: any = this.taskList.find((item: any): boolean => !!(item.children && item.children[0]))
+        this.chooseTask = task.children[0].id
       }
       
       this.searchList(this.chooseTask)
@@ -283,7 +274,6 @@ class Advance extends React.Component<{}, {}> {
   public addTask = () => {
     this.addTaskRef.initUsers()
     this.addTaskModal = true
-
   }
 
   public BreadcrumbItemText = (typeIndex: number): React.ReactNode => {
