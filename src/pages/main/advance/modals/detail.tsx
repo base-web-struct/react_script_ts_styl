@@ -164,7 +164,7 @@ class Detail extends React.Component<DetailProps, {}> {
                         <span>{item.content}</span>
                         <span onClick={this.showResource.bind(this, item.feedback_file_list)}>
                           {
-                            item.feedback_file_list.length ? 
+                            item.feedback_file_list && item.feedback_file_list.length > 0 ? 
                             <a href="#">查看资源</a> : ''
                           }
                         </span>
