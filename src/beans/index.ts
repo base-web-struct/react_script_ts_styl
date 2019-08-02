@@ -31,6 +31,9 @@ export default class Bean {
     0: '智能任务',
     1: '自建任务',
     2: '系统对接任务',
+    // 0: '系统对接任务',
+    // 1: '智能任务',
+    // 2: '自建任务',
   }
 
   // public static FH_MAP_URL = 'http://60.32.1.3/hero/community/index.html?policeNo=032604'

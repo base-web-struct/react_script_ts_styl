@@ -305,14 +305,15 @@ class Advance extends React.Component<{}, {}> {
         <div className="advance-tabs">
           <Breadcrumb className="task-type">
             <Breadcrumb.Item>
+              {this.BreadcrumbItemText(2)}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
               {this.BreadcrumbItemText(0)}
             </Breadcrumb.Item>
             <Breadcrumb.Item>  
               {this.BreadcrumbItemText(1)}
             </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.BreadcrumbItemText(2)}
-            </Breadcrumb.Item>
+            
           </Breadcrumb>
           <div className="advance-con-wrapper">
             {
