@@ -75,9 +75,13 @@ class Resource extends React.Component<ResourceProps, {}> {
                     ))
                     : item === '音频' ?
                     this.file_list[item].map((fileItem: any) => (
+                      fileItem.substring(fileItem.length - 4) !== 'mp3' || fileItem.substring(fileItem.length - 4) !== 'ogg' ?
+                      <a href={fileItem}>下载音频</a> :
                       // @ts-ignore
                       <audio controls="controls">
-                        <source src={fileItem} />
+                        <source src={fileItem} type="audio/mp3" />
+                        <source src={fileItem} type="audio/ogg" />
+                        <embed height="100" width="100" src={fileItem} />
                       </audio>
                     )) : ''
                   }
