@@ -296,7 +296,8 @@ class Advance extends React.Component<{}, {}> {
     this.taskType = taskType
     this.taskList = []
     this.msgList = []
-    this.initTaskList()
+    this.init()
+    // this.initTaskList()
   }
 
   public changeTaskPanel = (e: string[]) => {
