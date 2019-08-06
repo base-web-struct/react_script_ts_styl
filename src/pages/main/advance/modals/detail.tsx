@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { inject, observer } from 'mobx-react'
-import { Modal, Row, Col } from 'antd'
+import { Modal } from 'antd'
 import { observable } from 'mobx'
 import { MsgService } from 'src/services/msg'
 import Bean from 'src/beans';
@@ -134,7 +134,7 @@ class Detail extends React.Component<DetailProps, {}> {
               <label>任务状态</label>
               <div className="item-con">{Bean.MSG_STATUS[this.detailData.status]}</div>
             </div>
-            {
+            {/* {
               this.schema.length ?
               <div className="form-input origin">
               <label>原始数据</label>
@@ -151,7 +151,7 @@ class Detail extends React.Component<DetailProps, {}> {
                 </Row>
               </div>
             </div> : ''
-            }
+            } */}
             <div className="form-input list">
               <label>反馈列表</label>
               <div className="item-list">
