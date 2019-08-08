@@ -69,7 +69,7 @@ export default class HeaderNav extends React.Component<HeaderProps, {}> {
           userProfile ? 
           <div className="title">
             <i className="home-logo"></i>
-              <span className="title-text">{userProfile.parent_department ? userProfile.parent_department : '武汉市公安局'}数字派出所</span> 
+              <span className="title-text">{userProfile.parent_department ? userProfile.parent_department : '武汉市公安局'}{userProfile.department}</span> 
           </div>
           : ''
         }

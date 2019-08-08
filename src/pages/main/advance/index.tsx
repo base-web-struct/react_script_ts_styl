@@ -228,6 +228,29 @@ class Advance extends React.Component<{}, {}> {
         }
       }
     ]
+    if (this.taskType === 2) {
+      this.tableConfig = [
+        {
+          title: '消息内容',
+          key: 'title',
+          render: (data: any) => (
+            <div onClick={this.goDetail.bind(this, data)}>{data.title}</div>
+          )
+        },
+        {
+          width: 250,
+          title: '操作',
+          key: 'op',
+          render: (data: any) => {
+            return (
+              <div className="op-box">
+                <Button onClick={this.goDetail.bind(this, data)} className="receive">详情</Button>
+              </div>
+            )
+          }
+        }
+      ]
+    }
     this.initTaskList()
   }
   
@@ -264,7 +287,8 @@ class Advance extends React.Component<{}, {}> {
     this.taskType = taskType
     this.taskList = []
     this.msgList = []
-    this.initTaskList()
+    this.init()
+    // this.initTaskList()
   }
 
   public changeTaskPanel = (e: string[]) => {
